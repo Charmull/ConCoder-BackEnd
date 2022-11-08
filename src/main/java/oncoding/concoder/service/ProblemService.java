@@ -26,13 +26,10 @@ public class ProblemService {
     public List<Problem> getProblemsByStandard(String standard, UUID id) {
         List<Problem> list = new ArrayList<>();
         if (standard.equals("level")) {
-            list = problemRepository.findByLevelId(id);
+            list = problemRepository.findRandomByLevel(id, 5);
         }
         else if (standard.equals("category")) {
-            list =  problemCategoryRepository.findByCategoryId(id)
-                .stream()
-                .map(ProblemCategory::getProblem)
-                .collect(Collectors.toList());
+            list =  problemRepository.findRandomByCategory(id, 5);
         }
         else {
             // TODO : 존재하지않는 standard 예외 처리
