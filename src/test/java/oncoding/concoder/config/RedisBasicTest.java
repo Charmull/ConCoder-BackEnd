@@ -4,6 +4,7 @@ package oncoding.concoder.config;
 import java.util.concurrent.TimeUnit;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
@@ -13,6 +14,10 @@ import org.springframework.data.redis.core.ValueOperations;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
+@EnabledIfEnvironmentVariable(
+    named = "SPRING_PROFILES_ACTIVE",
+    matches = "local"
+)
 public class RedisBasicTest {
     
     @Autowired
