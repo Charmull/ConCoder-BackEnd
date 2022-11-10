@@ -4,9 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
+import oncoding.concoder.model.Category;
 import oncoding.concoder.model.Level;
 import oncoding.concoder.model.Problem;
+import oncoding.concoder.model.ProblemCategory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -24,10 +28,12 @@ class ProblemRepositoryTest {
     LevelRepository levelRepository;
     @Autowired
     CategoryRepository categoryRepository;
+    @Autowired
+    ProblemCategoryRepository problemCategoryRepository;
 
     @Test
     void Problem_레벨별_랜덤_다건_조회() {
-         // given
+        // given
         int limit = 2;
         String levelName1 = "Silver 1";
         String levelName2 = "Gold 3";
@@ -52,16 +58,57 @@ class ProblemRepositoryTest {
         assertThat(results.size()).isEqualTo(limit);
         results.forEach(problem ->
             assertThat(problem.getLevel().getId()).isEqualTo(level1.getId()));
-
     }
 
     @Test
     void Problem_카테고리별_랜덤_다건_조회() {
         // given
+        int limit = 3;
+        String categoryName1 = "DP";
+        String categoryName2 = "BFS";
+        String title = "Problem_Title";
+        String content = "Problem_Content";
+        int number = 4242;
+        Level level = levelRepository.save(new Level("Problem_Level"));
+        Category category1 = categoryRepository.save(new Category(categoryName1));
+        Category category2 = categoryRepository.save(new Category(categoryName2));
+
+        List<Problem> problemList = List.of(
+            Problem.builder().title(title).content(content).number(number++).level(level).build(),
+            Problem.builder().title(title).content(content).number(number++).level(level).build(),
+            Problem.builder().title(title).content(content).number(number++).level(level).build(),
+            Problem.builder().title(title).content(content).number(number++).level(level).build()
+        );
+        problemRepository.saveAll(problemList);
+        List<ProblemCategory> problemCategoryList = List.of(
+            new ProblemCategory(problemList.get(0), category1),
+            new ProblemCategory(problemList.get(0), category2),
+            new ProblemCategory(problemList.get(1), category1),
+            new ProblemCategory(problemList.get(2), category1),
+            new ProblemCategory(problemList.get(3), category1)
+        );
+        problemCategoryRepository.saveAll(problemCategoryList);
 
         // when
+        List<Problem> result1 = problemRepository.findRandomByCategory(category1.getId(), limit);
+        List<Problem> result2 = problemRepository.findRandomByCategory(category2.getId(), limit);
 
         // then
+        assertThat(result1.size()).isEqualTo(limit);
+        result1.forEach(problem -> {
+            List<UUID> uuids = problem.getCategories().stream().map(
+                problemCategory -> problemCategory.getCategory().getId()
+            ).collect(Collectors.toList());
+            assertThat(uuids).contains(category1.getId());
+        });
+
+        assertThat(result2.size()).isEqualTo(1);
+        result2.forEach(problem -> {
+            List<UUID> uuids = problem.getCategories().stream().map(
+                problemCategory -> problemCategory.getCategory().getId()
+            ).collect(Collectors.toList());
+            assertThat(uuids).contains(category2.getId());
+        });
 
     }
 
