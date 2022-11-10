@@ -1,22 +1,19 @@
 package oncoding.concoder.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
 import oncoding.concoder.model.Category;
 import oncoding.concoder.model.Level;
 import oncoding.concoder.model.Problem;
 import oncoding.concoder.model.ProblemCategory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -114,7 +111,28 @@ class ProblemRepositoryTest {
 
     @Test
     void Problem_검색_단건_조회() {
+        // given
+        int number = 2313;
+        String title = "P_TITLE";
+        String content = "P_CONTENT";
+        Level level = levelRepository.save(new Level("P_LEVEL"));
+        Problem problem = Problem.builder()
+            .title(title)
+            .content(content)
+            .number(number)
+            .level(level)
+            .build();
+        problemRepository.save(problem);
 
+        // when
+        Optional<Problem> result = problemRepository.findFirstByNumber(number);
+
+        // then
+        if (result.isEmpty()) fail("해당하는 Problem이 존재하지 않습니다.");
+        assertThat(result.get().getId()).isEqualTo(problem.getId());
+        assertThat(result.get().getNumber()).isEqualTo(problem.getNumber());
+        assertThat(result.get().getTitle()).isEqualTo(problem.getTitle());
+        assertThat(result.get().getContent()).isEqualTo(problem.getContent());
     }
 
 }
