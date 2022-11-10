@@ -23,6 +23,8 @@ public class ProblemCustomRepositoryImpl extends QuerydslRepositorySupport imple
             .innerJoin(problem.level, level)
             .fetchJoin()
             .where(level.id.eq(id))
+            .leftJoin(problem.categories)
+            .fetchJoin()
             .orderBy(NumberExpression.random().asc())
             .limit(limit)
             .fetch();

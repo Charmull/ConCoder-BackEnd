@@ -10,6 +10,7 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,4 +39,13 @@ public class Problem extends JpaBaseEntity {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "problem")
     private List<ProblemCategory> categories = new ArrayList<>();
 
+    @Builder
+    public Problem(Integer number, String title, String content, Float rate, Level level, List<ProblemCategory> categories) {
+        this.number = number;
+        this.title = title;
+        this.content = content;
+        this.rate = rate;
+        this.level = level;
+        this.categories = categories;
+    }
 }
