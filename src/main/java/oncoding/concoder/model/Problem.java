@@ -2,6 +2,7 @@ package oncoding.concoder.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,7 +37,7 @@ public class Problem extends JpaBaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private Level level;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "problem")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "problem", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ProblemCategory> categories = new ArrayList<>();
 
     @Builder

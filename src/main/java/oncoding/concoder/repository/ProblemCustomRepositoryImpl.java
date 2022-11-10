@@ -2,12 +2,14 @@ package oncoding.concoder.repository;
 
 import static oncoding.concoder.model.QCategory.category;
 import static oncoding.concoder.model.QLevel.level;
+import static oncoding.concoder.model.QProblemCategory.problemCategory;
 
 import com.querydsl.core.types.dsl.NumberExpression;
 import java.util.List;
 import java.util.UUID;
 import oncoding.concoder.model.Problem;
 import oncoding.concoder.model.QProblem;
+import oncoding.concoder.model.QProblemCategory;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 public class ProblemCustomRepositoryImpl extends QuerydslRepositorySupport implements  ProblemCustomRepository {
@@ -35,9 +37,13 @@ public class ProblemCustomRepositoryImpl extends QuerydslRepositorySupport imple
         final  QProblem problem = QProblem.problem;
 
         return from(problem)
-            .innerJoin(problem.categories)
+            .innerJoin(problem.categories, problemCategory)
             .fetchJoin()
-            .where(category.id.eq(id))
+            .where(problemCategory.category.id.eq(id))
+            .leftJoin(problem.level, level)
+            .fetchJoin()
+            .innerJoin(problemCategory.category, category)
+            .fetchJoin()
             .orderBy(NumberExpression.random().asc())
             .limit(limit)
             .fetch();
