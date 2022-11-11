@@ -1,16 +1,12 @@
 package oncoding.concoder.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import oncoding.concoder.dto.ProblemDto;
-import oncoding.concoder.dto.ProblemDto.CreateRequest;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CrawlingService {
     private static final String BOJ_URL = "https://www.acmicpc.net/problem/";

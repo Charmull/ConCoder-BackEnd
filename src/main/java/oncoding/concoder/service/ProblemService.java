@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import oncoding.concoder.dto.ProblemDto;
 import oncoding.concoder.model.Level;
@@ -14,9 +15,12 @@ import oncoding.concoder.model.Problem;
 import oncoding.concoder.model.ProblemCategory;
 import oncoding.concoder.repository.ProblemCategoryRepository;
 import oncoding.concoder.repository.ProblemRepository;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ProblemService {
     private final ProblemRepository problemRepository;
@@ -43,11 +47,11 @@ public class ProblemService {
         return list;
     }
 
-    public List<Problem> createProblems() throws IOException {
+    @Scheduled(cron = "0 0/20 * * * *")
+    public void createProblems() throws IOException {
         Optional<Problem> lastNumberProblem = problemRepository.findTopByOrderByNumberDesc();
 
-        int startNumber = lastNumberProblem.isPresent() ?
-            lastNumberProblem.get().getNumber()+1 : 1000;
+        int startNumber = lastNumberProblem.map(value -> value.getNumber() + 1).orElse(1000);
         List<ProblemDto.CreateRequest> rawProblems  = crawlingService.getRawProblems(startNumber);
 
         List<Integer> rawLevels = rawProblems.stream()
@@ -68,6 +72,6 @@ public class ProblemService {
                 .build();
             problems.add(problem);
         }
-        return problemRepository.saveAll(problems);
+        problemRepository.saveAll(problems);
     }
 }
