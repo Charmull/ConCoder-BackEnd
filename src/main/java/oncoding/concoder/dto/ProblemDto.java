@@ -1,9 +1,17 @@
 package oncoding.concoder.dto;
 
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 public class ProblemDto {
 
+    @Getter
+    @Setter
+    @ToString
+    @AllArgsConstructor
     public static class AllResponse {
         private Integer number;
         private String title;
