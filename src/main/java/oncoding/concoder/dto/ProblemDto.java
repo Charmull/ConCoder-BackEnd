@@ -16,8 +16,20 @@ public class ProblemDto {
         private Integer number;
         private String title;
         private Float rate;
-        private String content;
+        private String description;
+        private String input;
+        private String output;
         private LevelDto.Response level;
         private List<CategoryDto.Response> categories;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    @AllArgsConstructor
+    public static class CreateRequest {
+        private Integer problemId;
+        private String titleKo;
+        private Integer level;
     }
 }

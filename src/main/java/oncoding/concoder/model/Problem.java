@@ -47,10 +47,12 @@ public class Problem extends JpaBaseEntity {
     private List<ProblemCategory> categories = new ArrayList<>();
 
     @Builder
-    public Problem(Integer number, String title, String content, Float rate, Level level, List<ProblemCategory> categories) {
+    public Problem(Integer number, String title, String description, String input, String output, Float rate, Level level, List<ProblemCategory> categories) {
         this.number = number;
         this.title = title;
-        this.content = content;
+        this.description = description;
+        this.input = input;
+        this.output = output;
         this.rate = rate;
         this.level = level;
         this.categories = categories;

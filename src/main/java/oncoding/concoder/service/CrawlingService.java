@@ -1,13 +1,15 @@
 package oncoding.concoder.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import oncoding.concoder.dto.ProblemDto;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,9 +18,11 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CrawlingService {
-    static final String BOJ_URL = "https://www.acmicpc.net/problem/";
-    static final String SOLVEDAC_URL = "https://solved.ac/api/v3/problem/lookup?problemIds=";
+    private static final String BOJ_URL = "https://www.acmicpc.net/problem/";
+    private static final String SOLVEDAC_URL = "https://solved.ac/api/v3/problem/lookup?problemIds=";
+    private static final int CRAWLING_COUNT = 10;
 
     public Document connect() throws IOException {
         Connection connection = Jsoup.connect(BOJ_URL);
@@ -31,6 +35,16 @@ public class CrawlingService {
         for (Element element : elements) {
             builder.append(element.text());
             builder.append(seperator);
+        }
+        return builder.toString();
+    }
+
+    public String getProblemIds(int startNumber) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i<CRAWLING_COUNT; i++) {
+            builder.append(startNumber+i);
+            if (i==CRAWLING_COUNT-1) break;
+            builder.append(",");
         }
         return builder.toString();
     }
@@ -48,13 +62,16 @@ public class CrawlingService {
         return content;
     }
 
-    public void getProblemList() throws IOException {
-        URL url = new URL(SOLVEDAC_URL);
+    public List<ProblemDto.CreateRequest> getRawProblems(int startNumber) throws IOException {
+        String problemIds = getProblemIds(startNumber);
+        URL url = new URL(SOLVEDAC_URL+problemIds);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         ObjectMapper mapper = new ObjectMapper();
         String jsonInput = mapper.writeValueAsString(connection.getContent());
-        List<MyClass> myObjects = mapper.readValue(jsonInput, new TypeReference<List<MyClass>>(){});
+
+        List<ProblemDto.CreateRequest> rawProblems = mapper.readValue(jsonInput, new TypeReference<>(){});
+        return rawProblems;
     }
 
 }
