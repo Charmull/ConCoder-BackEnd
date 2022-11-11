@@ -32,7 +32,13 @@ public class Problem extends JpaBaseEntity {
 
     @Column
     @NotNull
-    private String content;
+    private String description;
+
+    @Column
+    private String input;
+
+    @Column
+    private String output;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Level level;
