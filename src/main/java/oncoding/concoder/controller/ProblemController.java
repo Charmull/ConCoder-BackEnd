@@ -44,7 +44,7 @@ public class ProblemController {
         return problemDtoMapper.toAllResponseList(problemService.getProblemsByStandard(standard, id));
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ProblemDto.AllResponse getProblem(@RequestParam("number") int number) {
         return problemDtoMapper.toAllResponse(problemService.getProblemByNumber(number));
     }
