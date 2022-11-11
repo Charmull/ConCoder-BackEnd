@@ -1,0 +1,30 @@
+version: '3.0'
+
+services:
+  app:
+    container_name: concoder-app
+    image: binimini/concoder-server:latest
+    ports:
+      - 8080:8080
+    env_file:
+      - .env
+
+  mysql:
+    container_name: concoder-mysql
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    volumes:
+      - concoder-volume:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${SPRING_DATABASE_PASSWORD}
+      MYSQL_DATABASE: ${SPRING_DATABASE_SCHEMA}
+
+  redis:
+    container_name: concoder-redis
+    image: redis:6.0
+    ports:
+      - 6379:6379
+
+volumes:
+  concoder-volume:
