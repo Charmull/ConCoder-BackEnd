@@ -3,6 +3,7 @@ package oncoding.concoder.dto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -27,6 +28,7 @@ public class ProblemDto {
     @Setter
     @ToString
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class CreateRequest {
         private Integer problemId;
         private String titleKo;

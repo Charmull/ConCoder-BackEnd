@@ -10,12 +10,17 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import oncoding.concoder.dto.ProblemDto;
+import oncoding.concoder.dto.ProblemDto.CreateRequest;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +29,8 @@ public class CrawlingService {
     private static final String SOLVEDAC_URL = "https://solved.ac/api/v3/problem/lookup?problemIds=";
     private static final int CRAWLING_COUNT = 10;
 
-    public Document connect() throws IOException {
-        Connection connection = Jsoup.connect(BOJ_URL);
+    public Document connect(int number) throws IOException {
+        Connection connection = Jsoup.connect(BOJ_URL+number);
         Document document = connection.get();
         return document;
     }
@@ -50,27 +55,29 @@ public class CrawlingService {
     }
 
     public Map<String, String> getContent(int number) throws IOException {
-        Document document = connect();
+        Document document = connect(number);
         Map<String, String> content = new HashMap<>();
 
         Elements descriptions = document.select("#problem_description");
         content.put("description", joinElementsText(descriptions, "\n"));
         Elements inputs = document.select("#problem_input");
-        content.put("description", joinElementsText(inputs, "\n"));
+        content.put("input", joinElementsText(inputs, "\n"));
         Elements outputs = document.select("#problem_output");
-        content.put("description", joinElementsText(outputs, "\n"));
+        content.put("output", joinElementsText(outputs, "\n"));
+
         return content;
     }
 
     public List<ProblemDto.CreateRequest> getRawProblems(int startNumber) throws IOException {
         String problemIds = getProblemIds(startNumber);
-        URL url = new URL(SOLVEDAC_URL+problemIds);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonInput = mapper.writeValueAsString(connection.getContent());
-
-        List<ProblemDto.CreateRequest> rawProblems = mapper.readValue(jsonInput, new TypeReference<>(){});
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<List<ProblemDto.CreateRequest>> response = restTemplate.exchange(
+            SOLVEDAC_URL+problemIds,
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<>(){});
+        List<ProblemDto.CreateRequest> rawProblems = response.getBody();
         return rawProblems;
     }
 

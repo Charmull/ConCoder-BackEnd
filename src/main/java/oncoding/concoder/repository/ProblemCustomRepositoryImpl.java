@@ -4,6 +4,7 @@ import static oncoding.concoder.model.QCategory.category;
 import static oncoding.concoder.model.QLevel.level;
 import static oncoding.concoder.model.QProblemCategory.problemCategory;
 
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +28,7 @@ public class ProblemCustomRepositoryImpl extends QuerydslRepositorySupport imple
             .where(level.id.eq(id))
             .leftJoin(problem.categories)
             .fetchJoin()
-            .orderBy(NumberExpression.random().asc())
+            .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
             .limit(limit)
             .fetch();
     }
@@ -44,7 +45,7 @@ public class ProblemCustomRepositoryImpl extends QuerydslRepositorySupport imple
             .fetchJoin()
             .innerJoin(problemCategory.category, category)
             .fetchJoin()
-            .orderBy(NumberExpression.random().asc())
+            .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
             .limit(limit)
             .fetch();
     }

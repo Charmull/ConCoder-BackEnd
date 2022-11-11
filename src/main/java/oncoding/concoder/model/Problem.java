@@ -30,14 +30,14 @@ public class Problem extends JpaBaseEntity {
     @Column
     private Float rate;
 
-    @Column
+    @Column(columnDefinition = "MEDIUMTEXT")
     @NotNull
     private String description;
 
-    @Column
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String input;
 
-    @Column
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String output;
 
     @ManyToOne(fetch = FetchType.EAGER)

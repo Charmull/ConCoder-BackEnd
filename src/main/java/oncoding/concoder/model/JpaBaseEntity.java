@@ -11,7 +11,7 @@ import lombok.Getter;
 @MappedSuperclass
 public class JpaBaseEntity {
     @Id
-    @Column(columnDefinition = "binary(16)")
+    @Column(columnDefinition = "BINARY(16)")
     @GeneratedValue
     private UUID id;
 }

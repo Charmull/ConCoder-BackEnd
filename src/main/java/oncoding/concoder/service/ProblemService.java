@@ -47,7 +47,7 @@ public class ProblemService {
         Optional<Problem> lastNumberProblem = problemRepository.findTopByOrderByNumberDesc();
 
         int startNumber = lastNumberProblem.isPresent() ?
-            lastNumberProblem.get().getNumber() : 1000;
+            lastNumberProblem.get().getNumber()+1 : 1000;
         List<ProblemDto.CreateRequest> rawProblems  = crawlingService.getRawProblems(startNumber);
 
         List<Integer> rawLevels = rawProblems.stream()
