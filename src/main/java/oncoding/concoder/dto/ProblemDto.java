@@ -16,7 +16,7 @@ public class ProblemDto {
     public static class AllResponse {
         private Integer number;
         private String title;
-        private Float rate;
+        private Float averageTries;
         private String description;
         private String input;
         private String output;
@@ -33,5 +33,6 @@ public class ProblemDto {
         private Integer problemId;
         private String titleKo;
         private Integer level;
+        private Float averageTries;
     }
 }

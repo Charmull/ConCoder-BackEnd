@@ -60,6 +60,7 @@ public class ProblemService {
         Map<Integer, Level> levelMap = levelService.getLevelMapByNumbers(rawLevels);
 
         List<Problem> problems = new ArrayList<>();
+        //TODO: 카테고리 생성 및 연관 처리
         for (ProblemDto.CreateRequest rawProblem : rawProblems) {
             Map<String, String> content = crawlingService.getContent(rawProblem.getProblemId());
             Problem problem = Problem.builder()
@@ -69,6 +70,7 @@ public class ProblemService {
                 .input(content.get("input"))
                 .output(content.get("output"))
                 .level(levelMap.get(rawProblem.getLevel()))
+                .averageTries(rawProblem.getAverageTries())
                 .build();
             problems.add(problem);
         }
