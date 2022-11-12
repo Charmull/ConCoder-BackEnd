@@ -2,6 +2,7 @@ version: '3.0'
 
 services:
   app:
+    restart: always
     container_name: concoder-app
     image: binimini/concoder-server:latest
     ports:
@@ -13,6 +14,7 @@ services:
       - redis
 
   mysql:
+    restart: always
     container_name: concoder-mysql
     image: mysql:8.0
     ports:
@@ -24,10 +26,15 @@ services:
       MYSQL_DATABASE: ${SPRING_DATABASE_SCHEMA}
 
   redis:
+    restart: always
     container_name: concoder-redis
     image: redis:6.0
     ports:
       - 6379:6379
+    deploy:
+      resources:
+        limits:
+          memory: 350M
 
 volumes:
   concoder-volume:
