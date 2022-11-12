@@ -15,7 +15,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 200M
+          memory: 400M
   mysql:
     restart: always
     container_name: concoder-mysql
@@ -30,7 +30,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 300M
+          memory: 420M
 
   redis:
     restart: always
@@ -41,7 +41,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 50M
+          memory: 30M
 
 volumes:
   concoder-volume:
