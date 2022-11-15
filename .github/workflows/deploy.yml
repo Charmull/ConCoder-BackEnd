@@ -42,7 +42,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_IP }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
+          password: ${{ secrets.SSH_PASSWORD }}
           source: 'docker-compose.yml'
           target: 'compose'
           rm: true
@@ -58,14 +58,9 @@ jobs:
         with:
           host: ${{ secrets.SSH_IP }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
+          password: ${{ secrets.SSH_PASSWORD }}
           envs: SPRING_DATABASE_SCHEMA,SPRING_DATABASE_USERNAME,SPRING_DATABASE_PASSWORD,SPRING_DATABASE_HOST,REDIS_HOST
           script: |
-            echo $SPRING_DATABASE_HOST
-            echo $SPRING_DATABASE_SCHEMA
-            echo $SPRING_DATABASE_USERNAME
-            echo $SPRING_DATABASE_PASSWORD
-            echo $REDIS_HOST
             cd compose
 
             sudo touch .env
@@ -76,6 +71,6 @@ jobs:
             SPRING_DATABASE_HOST=$SPRING_DATABASE_HOST
             REDIS_HOST=$REDIS_HOST" | sudo tee .env
 
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/concoder-server:latest
-            docker compose down
-            docker-compose up -d
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/concoder-server:latest
+            sudo docker compose down
+            sudo docker-compose up -d
