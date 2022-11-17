@@ -33,7 +33,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
 
   @EventListener
   public void onDisconnectEvent(final SessionDisconnectEvent event) {
-    System.out.println("hello");
+    System.out.println("DisconnectEvent");
   }
 
 }

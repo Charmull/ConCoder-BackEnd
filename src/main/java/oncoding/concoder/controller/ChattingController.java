@@ -14,7 +14,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Controller
@@ -40,7 +39,7 @@ public class ChattingController {
     template.convertAndSend("/sub/rooms/" + roomId, chatService.enter(roomId, request));
   }
 
-  @EventListener
+  @EventListener //이벤트를 받아들이는 Event Listener,  파라미터로 해당 Event가 전달됨
   public void exit(final SessionDisconnectEvent event) {
     ExitResponse response = chatService.exit(event.getSessionId());
     template.convertAndSend("/sub/rooms/" + response.getRoomId(), response.getSessionResponse());
