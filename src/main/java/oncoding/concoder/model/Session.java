@@ -17,17 +17,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Session {
-
-  @Id
-  @Column(columnDefinition = "BINARY(16)")
-  @GeneratedValue
-  private UUID id;
+public class Session extends JpaBaseEntity {
 
   private String sessionId;
 
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "id")
   private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)

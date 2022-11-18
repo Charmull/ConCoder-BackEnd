@@ -15,12 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
-
-  @Id
-  @Column(columnDefinition = "BINARY(16)")
-  @GeneratedValue
-  private UUID id;
+public class User extends JpaBaseEntity {
 
   private String name;
 

@@ -18,12 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Room {
-
-  @Id
-  @Column(columnDefinition = "BINARY(16)")
-  @GeneratedValue
-  private UUID id;
+public class Room extends JpaBaseEntity{
 
   @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
   private List<Session> sessions;

@@ -13,5 +13,5 @@ public class JpaBaseEntity {
     @Id
     @Column(columnDefinition = "BINARY(16)")
     @GeneratedValue
-    private UUID id;
+    UUID id;
 }
