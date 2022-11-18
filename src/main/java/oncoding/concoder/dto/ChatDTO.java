@@ -81,6 +81,19 @@ public class ChatDTO {
       }
     }
 
+
+  @Setter
+  @Getter
+  @AllArgsConstructor
+  @NoArgsConstructor
+  public static class SessionForTest {
+
+
+    private UUID id;
+    private String sessionId;
+
+  }
+
     @Setter
     @Getter
     @AllArgsConstructor

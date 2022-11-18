@@ -5,12 +5,14 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Configuration
 @EnableWebSocketMessageBroker //웹 소켓 메시지 처리 활성화
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer, WebSocketConfigurer {
 
   @Override
   public void configureMessageBroker(final MessageBrokerRegistry registry) {
@@ -36,4 +38,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
     System.out.println("DisconnectEvent");
   }
 
+  @Override
+  public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+
+    registry.addHandler(new SocketHandler(), "/socket")
+        .setAllowedOrigins("*");
+  }
 }
