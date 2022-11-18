@@ -2,6 +2,7 @@ package oncoding.concoder.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import io.restassured.RestAssured;
 import oncoding.concoder.dto.ChatDTO.SessionRequest;
 import oncoding.concoder.dto.ChatDTO.SessionResponse;
 import oncoding.concoder.model.Room;
@@ -10,15 +11,21 @@ import oncoding.concoder.model.User;
 import oncoding.concoder.repository.RoomRepository;
 import oncoding.concoder.repository.SessionRepository;
 import oncoding.concoder.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("local")
 public class ChattingServiceTest {
+
+  @LocalServerPort
+  private int port;
 
   @Autowired
   private UserRepository userRepository;
@@ -32,7 +39,13 @@ public class ChattingServiceTest {
   @Autowired
   private ChattingService service;
 
-
+  @BeforeEach
+  public void setUp() {
+    RestAssured.port = port;
+    userRepository.deleteAll();
+    roomRepository.deleteAll();
+    sessionRepository.deleteAll();
+  }
   @DisplayName("세션을 생성(방에 유저 입장)한다 - 세션이 생성은 되었지만 user의 session Id는 업뎃 전")
   @Test
   void createSession() {
