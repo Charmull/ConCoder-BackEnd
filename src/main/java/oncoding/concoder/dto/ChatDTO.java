@@ -85,7 +85,7 @@ public class ChatDTO {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public class SessionRequest {
+    public static class SessionRequest {
 
       private UUID userId;
       private String sessionId;
