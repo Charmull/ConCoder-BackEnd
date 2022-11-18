@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ChattingService {
 
@@ -29,29 +30,44 @@ public class ChattingService {
   private final SessionRepository sessionRepository;
 
 
+  /**
+   * 
+   * @param request
+   * @return request 내용을 바탕으로 생성된 메시지의 responseDTO 리턴
+   */
   public MessageResponse sendMessage(final MessageRequest request) {
     User user = userRepository.findById(request.getUserId()).orElseThrow(IllegalArgumentException::new);
-    return new MessageResponse(user.getId(), request.getContent());
+    return new MessageResponse(user.getId(), request.getContent()); //보낼 메세지 객체를 리턴
   }
 
-  @Transactional
+  /**
+   * 
+   * @param roomId
+   * @param request
+   * @return sessionResponse - 결론적으로 roomId에 해당되는 users임
+   */
+
   public SessionResponse enter(final UUID roomId, final SessionRequest request) {
     User user = userRepository.findById(request.getUserId()).orElseThrow(IllegalArgumentException::new);
     Room room = roomRepository.findById(roomId).orElseThrow(IllegalArgumentException::new);
-    Session session = new Session(request.getSessionId(), user, room);
+    Session session = new Session(request.getSessionId(), user, room); //세션 생성
 
-    sessionRepository.save(session);
+    sessionRepository.save(session); //여기서 세션의 찐 id까지 저장됨
 
-    return SessionResponse.from(room.users());
+    return SessionResponse.from(room.users()); //sessionResponse 생성 - room의 users를 가지고 있음
   }
 
-  @Transactional
+  /**
+   *
+   * @param sessionId
+   * @return 해당 sessionId가 있었던, 즉 나가는 방에서 해당 세션 삭제 후의 유저들을 반환
+   */
   public ExitResponse exit(final String sessionId) {
     Session session = sessionRepository.findBySessionId(sessionId).orElseThrow(IllegalArgumentException::new);
-    Room room = session.getRoom();
+    Room room = session.getRoom();//해당 session을 가지고 있는 room 찾음
 
-    session.delete();
-    sessionRepository.delete(session);
+    session.delete(); //해당 session을 가지고 있는 user에서 session을 null로 변경, room이 가지고 있는 session 리스트에서 해당 session을 없앰
+    sessionRepository.delete(session); //session자체를 삭제
 
     return new ExitResponse(room.getId(), SessionResponse.from(room.users()));
   }

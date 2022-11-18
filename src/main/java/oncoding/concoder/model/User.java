@@ -1,11 +1,7 @@
 package oncoding.concoder.model;
 
 import java.util.Objects;
-import java.util.UUID;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;

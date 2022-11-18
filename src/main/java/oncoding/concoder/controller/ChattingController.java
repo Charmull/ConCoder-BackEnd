@@ -20,7 +20,8 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @RequiredArgsConstructor
 public class ChattingController {
 
-  private final SimpMessagingTemplate template; // @EnableWebSocketMessageBroker를 통해서 등록되는 bean이다. 특정 Broker로 메시지를 전달한다.
+  private final SimpMessagingTemplate template; // @EnableWebSocketMessageBroker를 통해서 등록되는 bean이다.
+  // 특정 Broker로 메시지를 전달한다.
   private final ChattingService chatService;
 
  /*
@@ -29,11 +30,22 @@ public class ChattingController {
   @SendTo 설정한 구독 클라이언트들에게 메시지를 보냅니다.
  * */
 
+  /**
+   * 클라이언트에서 /publish/rooms/{roomId}/chat url로 메시지를 보내면, ChatRequest의 채팅방 id를 이용하여 해당 방을 구독 중인 사용자들에게 메시지를 전달하도록 함
+   * @param roomId
+   * @param request
+   */
   @MessageMapping("/rooms/{roomId}/chat")
   public void chat(@DestinationVariable final UUID roomId, final MessageRequest request) {
-    template.convertAndSend("/topic/rooms/" + roomId + "/chat", chatService.sendMessage(request));
+    template.convertAndSend("/sub/rooms/" + roomId + "/chat", chatService.sendMessage(request));
   }
 
+
+  /**
+   * 채팅방 생성 및 세션 생성
+   * @param roomId
+   * @param request
+   */
   @MessageMapping("/rooms/{roomId}")
   public void enter(@DestinationVariable final UUID roomId, final SessionRequest request) {
     template.convertAndSend("/sub/rooms/" + roomId, chatService.enter(roomId, request));
