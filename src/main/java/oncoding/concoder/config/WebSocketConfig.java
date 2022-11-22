@@ -8,6 +8,7 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Configuration
@@ -39,6 +40,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer { //Web
   public void onDisconnectEvent(final SessionDisconnectEvent event) {
     System.out.println("DisconnectEvent");
   }
+
+
+
+
 
 //  @Override
 //  public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {

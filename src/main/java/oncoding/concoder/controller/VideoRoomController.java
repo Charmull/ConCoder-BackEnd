@@ -42,6 +42,8 @@ public class VideoRoomController {
     template.convertAndSend("/sub/rooms/" + roomId, sessionResponse);
     template.convertAndSend("/sub/video/joined-room-info",sessionResponse);
 
+    log.info("convertAndSend to /sub/video/joined-room-info",sessionResponse);
+
     return sessionResponse;
 
   }
@@ -61,6 +63,8 @@ public class VideoRoomController {
 
     template.convertAndSend("/sub/video/caller-info",data);
 
+    log.info("convertAndSend to /sub/video/caller-info",data);
+
     return data;
   }
 
@@ -76,6 +80,7 @@ public class VideoRoomController {
     data.put("signal", ob.get("signal")); //그냥 data
 
     template.convertAndSend("/sub/video/callee-info",data);
+    log.info("convertAndSend to /sub/video/callee-info",data);
     return data;
   }
 
@@ -106,9 +111,11 @@ public class VideoRoomController {
     //채팅방에서도 나감
     ExitResponse response = chattingService.exit(event.getSessionId());
     template.convertAndSend("/sub/rooms/" + response.getRoomId(), response.getSessionResponse());
+    log.info("convertAndSend to /sub/rooms/getRoomid",response.getSessionResponse());
     
     //종료 세션 id 전달.
     template.convertAndSend("/sub/video/close-session", removedID);
+    log.info("convertAndSend to /sub/video/close-session",removedID);
 
   }
 
