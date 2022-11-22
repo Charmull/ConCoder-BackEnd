@@ -1,7 +1,5 @@
 package oncoding.concoder.controller;
 
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,16 +11,14 @@ import oncoding.concoder.dto.ChatDTO.ExitResponse;
 import oncoding.concoder.dto.ChatDTO.SessionRequest;
 import oncoding.concoder.dto.ChatDTO.SessionResponse;
 import oncoding.concoder.dto.ChatDTO.UserResponse;
-import oncoding.concoder.model.Room;
-import oncoding.concoder.model.User;
 import oncoding.concoder.service.ChattingService;
 import org.json.simple.JSONObject;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -42,13 +38,13 @@ public class VideoRoomController {
   // 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
   @MessageMapping("/video/joined-room-info")
   //@SendTo("/sub/video/joined-room-info")
-  private SessionResponse joinRoom(JSONObject ob) {
+  private SessionResponse joinRoom(@Header("simpSessionId") String sessionId,JSONObject ob) {
 
-    log.info("@MessageMapping(\"/video/joined-room-info\")",ob.toString());
+    log.info("@MessageMapping(\"/video/joined-room-info\") sessionId: "+sessionId+" ");
 
     //final UUID roomId, @RequestBody final SessionRequest request
     UUID roomId = UUID.fromString((String)ob.get("roomId"));
-    SessionRequest request = new SessionRequest(UUID.fromString((String)ob.get("userId")),(String)ob.get("sessionId"));
+    SessionRequest request = new SessionRequest(UUID.fromString((String)ob.get("userId")),sessionId);
 
 
     sessionResponse = chattingService.enter(roomId, request);
@@ -109,7 +105,7 @@ public class VideoRoomController {
 
     String removedID = "";
 
-    log.info("SessionDisconnectEvent: "+(String)event.getSessionId());
+    //log.info("SessionDisconnectEvent: "+(String)event.getSessionId());
 
     int room_users_cnt = sessionResponse.getUserResponses().size();
     List<UserResponse> users = sessionResponse.getUserResponses();
