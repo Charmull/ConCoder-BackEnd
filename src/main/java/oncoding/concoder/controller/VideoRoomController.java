@@ -1,21 +1,27 @@
 package oncoding.concoder.controller;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oncoding.concoder.dto.ChatDTO.DummyResponse;
 import oncoding.concoder.dto.ChatDTO.ExitResponse;
 import oncoding.concoder.dto.ChatDTO.SessionRequest;
 import oncoding.concoder.dto.ChatDTO.SessionResponse;
 import oncoding.concoder.dto.ChatDTO.UserResponse;
+import oncoding.concoder.model.Room;
+import oncoding.concoder.model.User;
 import oncoding.concoder.service.ChattingService;
 import org.json.simple.JSONObject;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
@@ -44,6 +50,7 @@ public class VideoRoomController {
     //final UUID roomId, @RequestBody final SessionRequest request
     UUID roomId = UUID.fromString((String)ob.get("roomId"));
     SessionRequest request = new SessionRequest(UUID.fromString((String)ob.get("userId")),(String)ob.get("sessionId"));
+
 
     sessionResponse = chattingService.enter(roomId, request);
     template.convertAndSend("/sub/rooms/" + roomId, sessionResponse);
@@ -123,6 +130,12 @@ public class VideoRoomController {
     template.convertAndSend("/sub/video/close-session", removedID);
     log.info("convertAndSend to /sub/video/close-session",removedID);
 
+  }
+
+  @PostMapping("/dummy")
+  public ResponseEntity<DummyResponse> createDummyRoomAndUser() {
+    DummyResponse response = chattingService.createDummy();
+    return ResponseEntity.ok(response);
   }
 
 }

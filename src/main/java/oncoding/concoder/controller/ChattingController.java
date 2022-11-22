@@ -57,11 +57,11 @@ public class ChattingController {
     template.convertAndSend("/sub/rooms/" + response.getRoomId(), response.getSessionResponse());
   }
 
-  @PostMapping("/dummy")
-  public ResponseEntity<DummyResponse> createDummyRoomAndUser() {
-    DummyResponse response = chatService.createDummy();
-    return ResponseEntity.ok(response);
-  }
+//  @PostMapping("/dummy")
+//  public ResponseEntity<DummyResponse> createDummyRoomAndUser() {
+//    DummyResponse response = chatService.createDummy();
+//    return ResponseEntity.ok(response);
+//  }
 
 
 }
