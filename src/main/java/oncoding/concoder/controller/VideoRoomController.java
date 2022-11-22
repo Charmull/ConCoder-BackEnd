@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
@@ -45,7 +46,6 @@ public class VideoRoomController {
     //final UUID roomId, @RequestBody final SessionRequest request
     UUID roomId = UUID.fromString((String)ob.get("roomId"));
     SessionRequest request = new SessionRequest(UUID.fromString((String)ob.get("userId")),sessionId);
-
 
     sessionResponse = chattingService.enter(roomId, request);
     template.convertAndSend("/sub/rooms/" + roomId, sessionResponse);
@@ -105,7 +105,10 @@ public class VideoRoomController {
 
     String removedID = "";
 
-    //log.info("SessionDisconnectEvent: "+(String)event.getSessionId());
+    StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
+    log.info("Disconnect event [sessionId: " + sha.getSessionId() + " : close status" + event.getCloseStatus() + "]");
+
+    log.info("SessionDisconnectEvent: "+(String)event.getSessionId());
 
     int room_users_cnt = sessionResponse.getUserResponses().size();
     List<UserResponse> users = sessionResponse.getUserResponses();
