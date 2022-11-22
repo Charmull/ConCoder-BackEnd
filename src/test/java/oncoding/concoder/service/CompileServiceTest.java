@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import oncoding.concoder.dto.CompileDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,8 +21,6 @@ class CompileServiceTest {
     @Autowired
     private CompileService compileService;
 
-    private final int THREAD_TIMEOUT_SECONDS = 10; // task timeout 설정 시간 (초)
-
     @Test
     void task_비동기_처리() {
         // given
@@ -29,8 +28,8 @@ class CompileServiceTest {
         String pythonCode = "print(\""+text+"\", end=\"\")";
 
         // when
-        String result = "";
-        Future<String> future = null;
+        CompileDto.Response result = null;
+        Future<CompileDto.Response> future = null;
         try {
            future = compileService.run(pythonCode, "");
            result = future.get();
@@ -41,10 +40,12 @@ class CompileServiceTest {
         }
 
         // then
-        assertThat(result).isEqualTo(text);
+        assertThat(result).isNotNull();
+        assertThat(result.getOutput()).isEqualTo(text);
+        assertThat(result.getTime()).isNotNull();
         assertThat(future).isNotNull();
         assertThat(future).isDone();
-        assertThat(future).succeedsWithin(THREAD_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        assertThat(future).succeedsWithin(CompileService.THREAD_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
     @Test
@@ -63,8 +64,8 @@ class CompileServiceTest {
         String errorCode = "print(";
 
         // when
-        String result = "";
-        Future<String> future = null;
+        CompileDto.Response result = null;
+        Future<CompileDto.Response> future = null;
         try {
             future = compileService.run(errorCode, "");
             result = future.get();
@@ -74,10 +75,12 @@ class CompileServiceTest {
             fail();
         }
         // then
-        assertThat(result).contains("Error"); // Error 내용 반환
+        assertThat(result).isNotNull();
+        assertThat(result.getOutput()).contains("Error"); // Error 내용 반환
+        assertThat(result.getTime()).isNotNull();
         assertThat(future).isNotNull();
         assertThat(future).isDone(); // Task 자체는 시간 내 완료
-        assertThat(future).succeedsWithin(THREAD_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        assertThat(future).succeedsWithin(CompileService.THREAD_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
     @Test
@@ -91,11 +94,11 @@ class CompileServiceTest {
         List<String> expectedResults = List.of("5\n15", "7\n21");
 
         // when
-        List<String> results = new ArrayList<>();
-        List<Future<String>> futures = new ArrayList<>();
+        List<CompileDto.Response> results = new ArrayList<>();
+        List<Future<CompileDto.Response>> futures = new ArrayList<>();
         try {
             for (int i = 0; i<inputs.size(); i++) {
-                Future<String> future = compileService.run(inputCode, inputs.get(i));
+                Future<CompileDto.Response> future = compileService.run(inputCode, inputs.get(i));
                 futures.add(future);
             }
             for (int i = 0; i<inputs.size(); i++) {
@@ -109,12 +112,13 @@ class CompileServiceTest {
         // then
         assertThat(results.size()).isEqualTo(inputs.size()); // Error 내용 반환
         for (int i = 0; i<inputs.size(); i++) {
-            Future<String> future = futures.get(i);
+            Future<CompileDto.Response> future = futures.get(i);
             assertThat(future).isNotNull();
             assertThat(future).isDone(); // Task 자체는 시간 내 완료
-            assertThat(future).succeedsWithin(THREAD_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-            String result = results.get(i);
-            assertThat(result).isEqualTo(expectedResults.get(i));
+            assertThat(future).succeedsWithin(CompileService.THREAD_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            CompileDto.Response result = results.get(i);
+            assertThat(result.getOutput()).isEqualTo(expectedResults.get(i));
+            assertThat(result.getTime()).isNotNull();
         }
 
     }
