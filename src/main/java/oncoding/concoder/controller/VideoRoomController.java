@@ -95,11 +95,13 @@ public class VideoRoomController {
 
 
 
+
   @EventListener
   private void handleSessionConnected(SessionConnectEvent event) {
 
   }
 
+  // void handleWebSocketDisconnectListener
   @EventListener
   private void handleSessionDisconnect(SessionDisconnectEvent event) {
 
@@ -110,7 +112,7 @@ public class VideoRoomController {
 
     log.info("SessionDisconnectEvent: "+(String)event.getSessionId());
 
-    int room_users_cnt = sessionResponse.getUserResponses().size();
+    //int room_users_cnt = sessionResponse.getUserResponses().size();
     List<UserResponse> users = sessionResponse.getUserResponses();
 
     for (UserResponse userResponse : users) {

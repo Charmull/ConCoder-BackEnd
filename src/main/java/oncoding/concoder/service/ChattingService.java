@@ -50,9 +50,10 @@ public class ChattingService {
   public SessionResponse enter(final UUID roomId, final SessionRequest request) {
     User user = userRepository.findById(request.getUserId()).orElseThrow(IllegalArgumentException::new);
     Room room = roomRepository.findById(roomId).orElseThrow(IllegalArgumentException::new);
-    Session session = new Session(request.getSessionId(), user, room); //세션 생성
+    Session session = new Session();
+    session = sessionRepository.save(session);//찐 id
 
-    sessionRepository.save(session); //여기서 세션의 찐 id까지 저장됨
+    sessionRepository.save(new Session(session.getId(),request.getSessionId(), user, room));
 
     return SessionResponse.from(room.users()); //sessionResponse 생성 - room의 users를 가지고 있음
   }
