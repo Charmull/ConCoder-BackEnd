@@ -17,6 +17,8 @@ import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
+import oncoding.concoder.dto.CompileDto;
+import oncoding.concoder.dto.CompileDto.Response;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
@@ -24,14 +26,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class CompileService {
-    private static final int THREAD_TIMEOUT_SECONDS = 10;
+    public static final int THREAD_TIMEOUT_SECONDS = 5;
 
     public void writeFile(String name, String content) throws IOException {
         File file = new File(Paths.get(String.format("%s.py", name)).toString());
 
         FileWriter fw = new FileWriter(file);
         try (BufferedWriter writer = new BufferedWriter(fw)) {
-            writer.write(content.substring(1, content.length()-1));
+            writer.write(content);
         }
     }
 
@@ -47,7 +49,7 @@ public class CompileService {
         System.out.println("Error : file "+ Paths.get(String.format("file %s.py", name)).toString() +" not deleted!");
     }
 
-    public String getOutput(BufferedReader bufferedReader, int exitCode, long time) throws IOException {
+    public CompileDto.Response getOutput(BufferedReader bufferedReader, int exitCode, long time) throws IOException {
         StringBuilder sb = new StringBuilder();
         String line;
         boolean first = true;
@@ -60,7 +62,7 @@ public class CompileService {
 
         String result = exitCode!=0 ? "failed" : "success";
         log.info("run " + result + " with exit code " + exitCode + " time: " + TimeUnit.MILLISECONDS.convert(time, TimeUnit.NANOSECONDS)+"ms");
-        return sb.toString();
+        return new CompileDto.Response(sb.toString(),  TimeUnit.MILLISECONDS.convert(time, TimeUnit.NANOSECONDS));
     }
 
     public Timer setTimeoutTimer (Thread thread) {
@@ -77,7 +79,7 @@ public class CompileService {
     }
 
     @Async("taskExecutor")
-    public Future<String> run(String code, String input) throws IOException, InterruptedException {
+    public Future<CompileDto.Response> run(String code, String input) throws IOException, InterruptedException {
         log.info(Thread.currentThread().getName()+" thread run()...");
         String random = UUID.randomUUID().toString();
 
