@@ -16,6 +16,7 @@ import org.json.simple.JSONObject;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -36,7 +37,7 @@ public class VideoRoomController {
   // 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
   @MessageMapping("/video/joined-room-info")
   //@SendTo("/sub/video/joined-room-info")
-  private SessionResponse joinRoom(final UUID roomId, final SessionRequest request) {
+  private SessionResponse joinRoom(final UUID roomId, @RequestBody final SessionRequest request) {
 
     sessionResponse = chattingService.enter(roomId, request);
     template.convertAndSend("/sub/rooms/" + roomId, sessionResponse);
