@@ -107,16 +107,17 @@ public class VideoRoomController {
 
     String removedID = "";
 
-    StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-    log.info("Disconnect event [sessionId: " + sha.getSessionId() + " : close status" + event.getCloseStatus() + "]");
-
-    log.info("SessionDisconnectEvent: "+(String)event.getSessionId());
+   // StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
+    //log.info("Disconnect event [sessionId: " + sha.getSessionId() + " : close status" + event.getCloseStatus() + "]");
+    String sessionId = (String) event.getMessage().getHeaders().get("simpSessionId");
+    log.info("event.getMessage().getHeaders().get(\"simpSessionId\")"+sessionId);
+    //log.info("SessionDisconnectEvent: "+(String)event.getSessionId());
 
     //int room_users_cnt = sessionResponse.getUserResponses().size();
     List<UserResponse> users = sessionResponse.getUserResponses();
 
     for (UserResponse userResponse : users) {
-      if (userResponse.getSessionId().equals(event.getSessionId())) {
+      if (userResponse.getSessionId().equals(sessionId)) {
         removedID = userResponse.getSessionId();
         users.remove(userResponse);
         break;
@@ -124,7 +125,7 @@ public class VideoRoomController {
     }
 
     //채팅방에서도 나감
-    ExitResponse response = chattingService.exit(event.getSessionId());
+    ExitResponse response = chattingService.exit(sessionId);
     template.convertAndSend("/sub/rooms/" + response.getRoomId(), response.getSessionResponse());
     log.info("convertAndSend to /sub/rooms/getRoomid",response.getSessionResponse());
     
