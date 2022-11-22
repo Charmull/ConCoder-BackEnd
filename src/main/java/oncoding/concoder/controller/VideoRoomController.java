@@ -37,7 +37,6 @@ public class VideoRoomController {
   private final ChattingService chattingService;
   private final SimpMessagingTemplate template;
 
-
   private SessionResponse sessionResponse;
 
   // 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
@@ -109,6 +108,8 @@ public class VideoRoomController {
   private void handleSessionDisconnect(SessionDisconnectEvent event) {
 
     String removedID = "";
+
+    log.info("SessionDisconnectEvent: "+(String)event.getSessionId());
 
     int room_users_cnt = sessionResponse.getUserResponses().size();
     List<UserResponse> users = sessionResponse.getUserResponses();
