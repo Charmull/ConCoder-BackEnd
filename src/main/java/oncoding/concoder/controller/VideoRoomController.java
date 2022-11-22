@@ -37,14 +37,19 @@ public class VideoRoomController {
   // 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
   @MessageMapping("/video/joined-room-info")
   //@SendTo("/sub/video/joined-room-info")
-  private SessionResponse joinRoom(final UUID roomId, @RequestBody final SessionRequest request) {
+  private SessionResponse joinRoom(JSONObject ob) {
+
+    log.info("@MessageMapping(\"/video/joined-room-info\")",ob.toString());
+
+    //final UUID roomId, @RequestBody final SessionRequest request
+    UUID roomId = UUID.fromString((String)ob.get("roomId"));
+    SessionRequest request = new SessionRequest(UUID.fromString((String)ob.get("userId")),(String)ob.get("sessionId"));
 
     sessionResponse = chattingService.enter(roomId, request);
     template.convertAndSend("/sub/rooms/" + roomId, sessionResponse);
     template.convertAndSend("/sub/video/joined-room-info",sessionResponse);
 
     log.info("convertAndSend to /sub/video/joined-room-info",sessionResponse);
-
     return sessionResponse;
 
   }
