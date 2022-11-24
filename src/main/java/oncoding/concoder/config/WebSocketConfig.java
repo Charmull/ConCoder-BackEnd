@@ -1,19 +1,42 @@
 package oncoding.concoder.config;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import oncoding.concoder.controller.VideoRoomController;
+import oncoding.concoder.dto.ChatDTO.SessionResponse;
+import oncoding.concoder.dto.ChatDTO.UserResponse;
+import oncoding.concoder.model.User;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Configuration
+@Slf4j
 @EnableWebSocketMessageBroker //웹 소켓 메시지 처리 활성화
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer { //WebSocketConfigurer
+
+  @Override
+  public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
+    // stomp 최대 버퍼 사이즈를 늘리기 위한 설정
+    registry.setMessageSizeLimit(50000 * 1024);
+    registry.setSendBufferSizeLimit(10240 * 1024);
+    registry.setSendTimeLimit(20000);
+  }
+
 
   @Override
   public void configureMessageBroker(final MessageBrokerRegistry registry) {
@@ -36,19 +59,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer { //Web
         .withSockJS(); // fallback
   }
 
-  @EventListener
-  public void onDisconnectEvent(final SessionDisconnectEvent event) {
-    System.out.println("DisconnectEvent");
-  }
 
 
-
-
-
-//  @Override
-//  public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-//
-//    registry.addHandler(new SocketHandler(), "/socket")
-//        .setAllowedOrigins("*");
+//  @EventListener
+//  public void onDisconnectEvent(final SessionDisconnectEvent event) {
+//    System.out.println("DisconnectEvent");
+//    log.info("SessionDisconnectEventListener sessionId : "+event.getSessionId()); //해당 유저의 sessionId 받아옴
+//    //videoRoomController.handleSessionDisconnect(event.getSessionId())
 //  }
+
+
+
 }

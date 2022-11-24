@@ -1,11 +1,13 @@
 package oncoding.concoder.controller;
 
+import java.net.http.WebSocket;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oncoding.concoder.config.WebSocketConfig;
 import oncoding.concoder.dto.ChatDTO.DummyResponse;
 import oncoding.concoder.dto.ChatDTO.ExitResponse;
 import oncoding.concoder.dto.ChatDTO.SessionRequest;
@@ -18,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
@@ -36,10 +37,12 @@ public class VideoRoomController {
 
   private SessionResponse sessionResponse;
 
+
   // 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
   @MessageMapping("/video/joined-room-info")
-  //@SendTo("/sub/video/joined-room-info")
   private SessionResponse joinRoom(@Header("simpSessionId") String sessionId,JSONObject ob) {
+    
+    //만약에 connectEvent 에서 sessioniD 받아올 수 있으면 HEADER가 아니라 그냥 ob 안에 담아서 처리하면 됨
 
     log.info("@MessageMapping(\"/video/joined-room-info\") sessionId: "+sessionId+" ");
 
@@ -52,6 +55,7 @@ public class VideoRoomController {
     template.convertAndSend("/sub/video/joined-room-info " + sessionResponse);
 
     log.info("convertAndSend to /sub/video/joined-room-info"+ sessionResponse);
+
     return sessionResponse;
 
   }
@@ -93,29 +97,26 @@ public class VideoRoomController {
   }
 
 
-
-
-
   @EventListener
   private void handleSessionConnected(SessionConnectEvent event) {
+    log.info("session connected");
 
   }
 
-  // void handleWebSocketDisconnectListener
+
   @EventListener
-  public void handleSessionDisconnect(SessionDisconnectEvent event) {
+  public void handleSessionDisconnect(final SessionDisconnectEvent event) {
+    // 그냥 disconnect 결과로 프론트한테 removedID 쏴주면 아래처럼 나간 유저 정보 삭제 시키는 걸로 다시 요청 달라고 하기
 
-    String removedID = "";
+    String sessionId = event.getSessionId();
 
-   // StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-    //log.info("Disconnect event [sessionId: " + sha.getSessionId() + " : close status" + event.getCloseStatus() + "]");
-    String sessionId = (String) event.getMessage().getHeaders().get("simpSessionId");
-    log.info("event.getMessage().getHeaders().get(\"simpSessionId\")"+sessionId);
-    //log.info("SessionDisconnectEvent: "+(String)event.getSessionId());
+    String removedId = "";
 
-    //int room_users_cnt = sessionResponse.getUserResponses().size();
     List<UserResponse> users = sessionResponse.getUserResponses();
 
+    log.info("disconnect event Listener sessionId: "+sessionId);
+
+    //현재 세션 목록에서 연결 끊은 유저 제외시킴
     for (UserResponse userResponse : users) {
       if (userResponse.getSessionId().equals(sessionId)) {
         removedID = userResponse.getSessionId();
@@ -128,10 +129,10 @@ public class VideoRoomController {
     ExitResponse response = chattingService.exit(sessionId);
     template.convertAndSend("/sub/rooms/" + response.getRoomId(), response.getSessionResponse());
     log.info("convertAndSend to /sub/rooms/getRoomid",response.getSessionResponse());
-    
+
     //종료 세션 id 전달.
-    template.convertAndSend("/sub/video/close-session", removedID);
-    log.info("convertAndSend to /sub/video/close-session",removedID);
+    template.convertAndSend("/sub/video/close-session", removedId);
+    log.info("convertAndSend to /sub/video/close-session",removedId);
 
   }
 

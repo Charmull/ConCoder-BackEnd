@@ -51,11 +51,11 @@ public class ChattingController {
     template.convertAndSend("/sub/rooms/" + roomId, chatService.enter(roomId, request));
   }
 
-  @EventListener //이벤트를 받아들이는 Event Listener,  파라미터로 해당 Event가 전달됨
-  public void exit(final SessionDisconnectEvent event) {
-    ExitResponse response = chatService.exit(event.getSessionId());
-    template.convertAndSend("/sub/rooms/" + response.getRoomId(), response.getSessionResponse());
-  }
+//  @EventListener //이벤트를 받아들이는 Event Listener,  파라미터로 해당 Event가 전달됨
+//  public void exit(final SessionDisconnectEvent event) {
+//    ExitResponse response = chatService.exit(event.getSessionId());
+//    template.convertAndSend("/sub/rooms/" + response.getRoomId(), response.getSessionResponse());
+//  }
 
 //  @PostMapping("/dummy")
 //  public ResponseEntity<DummyResponse> createDummyRoomAndUser() {
