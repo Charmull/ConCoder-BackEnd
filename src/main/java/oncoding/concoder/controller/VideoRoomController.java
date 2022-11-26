@@ -51,7 +51,7 @@ public class VideoRoomController {
     SessionRequest request = new SessionRequest(UUID.fromString((String)ob.get("userId")),sessionId);
 
     sessionResponse = chattingService.enter(roomId, request);
-    template.convertAndSend("/sub/rooms/" + roomId + sessionResponse);
+    //template.convertAndSend("/sub/rooms/" + roomId + sessionResponse);
     template.convertAndSend("/sub/video/joined-room-info " + sessionResponse);
 
     log.info("convertAndSend to /sub/video/joined-room-info"+ sessionResponse);
