@@ -111,7 +111,7 @@ public class VideoRoomController {
 
 
   @EventListener
-  public void handleSessionDisconnect(final SessionDisconnectEvent event) {
+  public void handleSessionDisconnect(SessionDisconnectEvent event) {
     // 그냥 disconnect 결과로 프론트한테 removedID 쏴주면 아래처럼 나간 유저 정보 삭제 시키는 걸로 다시 요청 달라고 하기
 
     String sessionId = event.getSessionId();
@@ -122,6 +122,9 @@ public class VideoRoomController {
 
     log.info("disconnect event Listener sessionId: "+sessionId);
 
+    log.info("now SessionList: ");
+    log.info(users.toString());
+
     //현재 세션 목록에서 연결 끊은 유저 제외시킴
     for (UserResponse userResponse : users) {
       if (userResponse.getSessionId().equals(sessionId)) {
@@ -131,10 +134,14 @@ public class VideoRoomController {
       }
     }
 
+
+    log.info("disconnect event Listener removed id: "+removedId);
+
+
     //채팅방에서도 나감
-    ExitResponse response = chattingService.exit(sessionId);
-    template.convertAndSend("/sub/rooms/" + response.getRoomId(), response.getSessionResponse());
-    log.info("convertAndSend to /sub/rooms/getRoomid",response.getSessionResponse());
+    ExitResponse response = chattingService.exit(removedId);
+    //template.convertAndSend("/sub/rooms/" + response.getRoomId(), response.getSessionResponse());
+    //log.info("convertAndSend to /sub/rooms/getRoomid",response.getSessionResponse());
 
     //종료 세션 id 전달.
     template.convertAndSend("/sub/video/close-session", removedId);
