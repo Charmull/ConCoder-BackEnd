@@ -21,6 +21,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -114,7 +115,9 @@ public class VideoRoomController {
   public void handleSessionDisconnect(SessionDisconnectEvent event) {
     // 그냥 disconnect 결과로 프론트한테 removedID 쏴주면 아래처럼 나간 유저 정보 삭제 시키는 걸로 다시 요청 달라고 하기
 
-    String sessionId = event.getSessionId();
+    //String sessionId = event.getSessionId();
+    StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+    String sessionId = accessor.getSessionId();
 
     String removedId = "";
 
