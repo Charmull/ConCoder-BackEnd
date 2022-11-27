@@ -19,6 +19,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +34,9 @@ public class VideoRoomController {
   // 테스트용 세션 리스트.
 
   private final ChattingService chattingService;
-  private final SimpMessagingTemplate template;
+  //private final SimpMessagingTemplate template;
+  private final SimpMessageSendingOperations template;
+
 
   private SessionResponse sessionResponse;
 
