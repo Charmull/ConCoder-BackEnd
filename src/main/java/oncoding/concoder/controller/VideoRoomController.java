@@ -121,34 +121,31 @@ public class VideoRoomController {
 
     String removedId = "";
 
-    List<UserResponse> users = sessionResponse.getUserResponses();
+    //List<UserResponse> users = sessionResponse.getUserResponses();
 
     log.info("disconnect event Listener sessionId: "+sessionId);
 
-    log.info("now SessionList: ");
-    log.info(users.toString());
-
     //현재 세션 목록에서 연결 끊은 유저 제외시킴
-    for (UserResponse userResponse : users) {
-      if (userResponse.getSessionId().equals(sessionId)) {
-        removedId = userResponse.getSessionId();
-        users.remove(userResponse);
-        break;
-      }
-    }
-
+//    for (UserResponse userResponse : users) {
+//      if (userResponse.getSessionId().equals(sessionId)) {
+//        removedId = userResponse.getSessionId();
+//        users.remove(userResponse);
+//        break;
+//      }
+//    }
+//
 
     log.info("disconnect event Listener removed id: "+removedId);
 
 
     //채팅방에서도 나감
-    ExitResponse response = chattingService.exit(removedId);
-    //template.convertAndSend("/sub/rooms/" + response.getRoomId(), response.getSessionResponse());
-    //log.info("convertAndSend to /sub/rooms/getRoomid",response.getSessionResponse());
-
-    //종료 세션 id 전달.
-    template.convertAndSend("/sub/video/close-session", removedId);
-    log.info("convertAndSend to /sub/video/close-session",removedId);
+//    ExitResponse response = chattingService.exit(removedId);
+//    //template.convertAndSend("/sub/rooms/" + response.getRoomId(), response.getSessionResponse());
+//    //log.info("convertAndSend to /sub/rooms/getRoomid",response.getSessionResponse());
+//
+//    //종료 세션 id 전달.
+//    template.convertAndSend("/sub/video/close-session", removedId);
+//    log.info("convertAndSend to /sub/video/close-session",removedId);
 
   }
 
