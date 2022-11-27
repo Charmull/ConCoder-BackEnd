@@ -132,7 +132,13 @@ public class ChatDTO {
       private String sessionId;
 
       public static UserResponse from(final User user) {
-        return new UserResponse(user.getId(), user.getName(), "Empty");
+        String userSessionId;
+        if(user.getSession()!=null){
+          userSessionId = user.getSession().getSessionId();
+        }else{
+          userSessionId = "Empty";
+        }
+        return new UserResponse(user.getId(), user.getName(), userSessionId);
       }
     }
 

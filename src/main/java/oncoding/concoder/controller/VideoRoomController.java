@@ -21,6 +21,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
@@ -34,8 +35,8 @@ public class VideoRoomController {
   // 테스트용 세션 리스트.
 
   private final ChattingService chattingService;
-  //private final SimpMessagingTemplate template;
-  private final SimpMessageSendingOperations template;
+  private final SimpMessagingTemplate template;
+  //private final SimpMessageSendingOperations template;
 
 
   private SessionResponse sessionResponse;
@@ -144,6 +145,12 @@ public class VideoRoomController {
   @PostMapping("/dummy")
   public ResponseEntity<DummyResponse> createDummyRoomAndUser() {
     DummyResponse response = chattingService.createDummy();
+    return ResponseEntity.ok(response);
+  }
+
+  @GetMapping("/dummy")
+  public ResponseEntity<DummyResponse> getDummyRoomAndUser() {
+    DummyResponse response = chattingService.getDummy();
     return ResponseEntity.ok(response);
   }
 

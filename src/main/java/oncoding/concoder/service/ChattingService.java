@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import oncoding.concoder.dto.ChatDTO.DummyResponse;
 import oncoding.concoder.dto.ChatDTO.ExitResponse;
 import oncoding.concoder.dto.ChatDTO.MessageRequest;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class ChattingService {
@@ -52,6 +54,11 @@ public class ChattingService {
     Room room = roomRepository.findById(roomId).orElseThrow(IllegalArgumentException::new);
     Session session = new Session();
     session = sessionRepository.save(session);//찐 id
+
+    log.info("<<<<<enter service>>>>>");
+    log.info("entered user: "+user.toString());
+    log.info("entered room: "+ room.toString());
+    log.info("entered session: "+session.toString());
 
     sessionRepository.save(new Session(session.getId(),request.getSessionId(), user, room));
 
@@ -88,6 +95,22 @@ public class ChattingService {
     rooms.add(roomRepository.save(new Room(5)));
 
     return DummyResponse.of(users, rooms);
+  }
+
+  public DummyResponse getDummy() {
+    List<User> users = new ArrayList<>();
+    List<Room> rooms = new ArrayList<>();
+
+    users = userRepository.findAll();
+    rooms=roomRepository.findAll();
+
+    return DummyResponse.of(users, rooms);
+  }
+
+  public void clearDummy() {
+
+    userRepository.deleteAll();
+    roomRepository.deleteAll();
   }
 
 }
