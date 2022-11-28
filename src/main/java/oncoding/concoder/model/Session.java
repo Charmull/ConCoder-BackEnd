@@ -50,7 +50,7 @@ public class Session extends JpaBaseEntity {
   }
 
   public void delete() {
-    log.info("Session user"+this.user);
+    log.info("Session user"+this.user); //여기서 null터짐
     log.info("Session room"+this.room);
     this.user.exit(this);
     this.room.exit(this);

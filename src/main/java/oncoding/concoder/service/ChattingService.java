@@ -74,6 +74,7 @@ public class ChattingService {
     Session session = sessionRepository.findBySessionId(sessionId).orElseThrow(IllegalArgumentException::new);
     Room room = session.getRoom();//해당 session을 가지고 있는 room 찾음
 
+    log.info("exited user: "+session.getUser().getId());
     log.info("exited session: "+session.getSessionId());
     log.info("exited room: "+room.getId());
 
