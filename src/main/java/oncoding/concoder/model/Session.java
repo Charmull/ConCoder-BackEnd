@@ -13,9 +13,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Entity
+@Slf4j
 @NoArgsConstructor
 public class Session extends JpaBaseEntity {
 
@@ -48,7 +50,9 @@ public class Session extends JpaBaseEntity {
   }
 
   public void delete() {
-    user.exit(this);
-    room.exit(this);
+    log.info("Session user"+this.user);
+    log.info("Session room"+this.room);
+    this.user.exit(this);
+    this.room.exit(this);
   }
 }
