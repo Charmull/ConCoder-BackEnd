@@ -74,8 +74,12 @@ public class ChattingService {
     Session session = sessionRepository.findBySessionId(sessionId).orElseThrow(IllegalArgumentException::new);
     Room room = session.getRoom();//해당 session을 가지고 있는 room 찾음
 
+    log.info("exited session: "+session.getSessionId());
+    log.info("exited room: "+room.getId());
+
     session.delete(); //해당 session을 가지고 있는 user에서 session을 null로 변경, room이 가지고 있는 session 리스트에서 해당 session을 없앰
     sessionRepository.delete(session); //session자체를 삭제
+
 
     return new ExitResponse(room.getId(), SessionResponse.from(room.users()));
   }
