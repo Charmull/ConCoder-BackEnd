@@ -102,7 +102,7 @@ public class VideoRoomController {
     //현재 세션 목록에서 연결 끊은 유저 제외시킴
     for (UserResponse userResponse : users) {
       if (userResponse.getSessionId().equals(sessionId)) {
-        removedId = userResponse.getSessionId();
+        removedId = sessionId;
         users.remove(userResponse);
         break;
       }
@@ -111,7 +111,7 @@ public class VideoRoomController {
     log.info("removed id: "+removedId);
 
     //채팅방에서도 나감
-    ExitResponse response = chattingService.exit(removedId);
+    ExitResponse response = chattingService.exit(sessionId);
     //template.convertAndSend("/sub/rooms/" + response.getRoomId(), response.getSessionResponse());
     //log.info("convertAndSend to /sub/rooms/getRoomid",response.getSessionResponse());
 
