@@ -33,8 +33,7 @@ public class VideoRoomController {
   private final ChattingService chattingService;
   private final SimpMessagingTemplate template;
 
-  //private SessionResponse sessionResponse;
-
+  private SessionResponse sessionResponse;
 
 
 /*
@@ -62,6 +61,69 @@ public class VideoRoomController {
 
   }
 */
+
+
+  // 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
+  @MessageMapping("/video/joined-room-info")
+  private SessionResponse joinRoom(JSONObject ob) {
+    //만약에 connectEvent 에서 sessioniD 받아올 수 있으면 HEADER가 아니라 그냥 ob 안에 담아서 처리하면 됨
+    String sessionId = (String) ob.get("sessionId");
+    log.info("@MessageMapping(\"/video/joined-room-info\") sessionId: "+sessionId+" ");
+
+    //final UUID roomId, @RequestBody final SessionRequest request
+    UUID roomId = UUID.fromString((String)ob.get("roomId"));
+    SessionRequest request = new SessionRequest(UUID.fromString((String)ob.get("userId")),sessionId);
+
+    sessionResponse = chattingService.enter(roomId, request);
+    //template.convertAndSend("/sub/rooms/" + roomId + sessionResponse);
+
+    template.convertAndSend("/sub/video/joined-room-info",sessionResponse);
+
+    log.info("convertAndSend to /sub/video/joined-room-info"+ sessionResponse);
+
+    return sessionResponse;
+
+  }
+
+  // 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
+  @MessageMapping("/video/unjoined-room-info")
+  private SessionResponse unJoinRoom(JSONObject ob) {
+    //만약에 connectEvent 에서 sessioniD 받아올 수 있으면 HEADER가 아니라 그냥 ob 안에 담아서 처리하면 됨
+    String sessionId = (String) ob.get("sessionId");
+    log.info("@MessageMapping(\"/video/unjoined-room-info\") sessionId: "+sessionId+" ");
+
+    String removedId = "";
+
+    List<UserResponse> users = this.sessionResponse.getUserResponses();
+
+    //현재 세션 목록에서 연결 끊은 유저 제외시킴
+    for (UserResponse userResponse : users) {
+      if (userResponse.getSessionId().equals(sessionId)) {
+        removedId = userResponse.getSessionId();
+        users.remove(userResponse);
+        break;
+      }
+    }
+
+    log.info("removed id: "+removedId);
+
+    //채팅방에서도 나감
+    ExitResponse response = chattingService.exit(removedId);
+    //template.convertAndSend("/sub/rooms/" + response.getRoomId(), response.getSessionResponse());
+    //log.info("convertAndSend to /sub/rooms/getRoomid",response.getSessionResponse());
+
+    //종료 세션 id 전달.
+   // template.convertAndSend("/sub/video/close-session", removedId);
+    //log.info("convertAndSend to /sub/video/close-session",removedId);
+
+    template.convertAndSend("/sub/video/unjoined-room-info",removedId);
+
+    log.info("convertAndSend to /sub/video/unjoined-room-info"+ removedId);
+
+    return this.sessionResponse;
+
+  }
+
 
   // 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
   @MessageMapping("/video/joined-room-info")
@@ -156,7 +218,8 @@ public class VideoRoomController {
 //    }
 //
 
-    log.info("disconnect event Listener removed id: "+removedId);
+    //log.info("disconnect event Listener removed id: "+removedId);
+
 
 
     //채팅방에서도 나감
