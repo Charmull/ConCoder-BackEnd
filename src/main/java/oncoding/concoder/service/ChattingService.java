@@ -60,7 +60,14 @@ public class ChattingService {
     log.info("entered room: "+ room.toString());
     log.info("entered session: "+session.toString());
 
-    sessionRepository.save(new Session(session.getId(),request.getSessionId(), user, room));
+    Session newSession = new Session(session.getId(),request.getSessionId(), user, room);
+    sessionRepository.save(newSession);
+    user.setSession(newSession);
+    userRepository.save(user);
+
+    log.info("entered session info: ");
+    log.info("entered user: "+newSession.getUser().getId());
+    log.info("entered room: "+newSession.getRoom().getId());
 
     return SessionResponse.from(room.users()); //sessionResponse 생성 - room의 users를 가지고 있음
   }
@@ -74,7 +81,7 @@ public class ChattingService {
     Session session = sessionRepository.findBySessionId(sessionId).orElseThrow(IllegalArgumentException::new);
     Room room = session.getRoom();//해당 session을 가지고 있는 room 찾음
 
-    log.info("exited user: "+session.getUser().getId());
+    //log.info("exited user: "+session.getUser().getId());
     log.info("exited session: "+session.getSessionId());
     log.info("exited room: "+room.getId());
 

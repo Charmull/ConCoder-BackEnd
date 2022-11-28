@@ -13,9 +13,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Getter
+@Setter
 @Entity
 @Slf4j
 @NoArgsConstructor
@@ -32,11 +34,6 @@ public class Session extends JpaBaseEntity {
   private Room room;
 
 
-  @Builder
-  public Session(final String sessionId, final User user, final Room room) {
-    this(null, sessionId, user, room);
-  }
-
 
   @Builder
   public Session(final UUID id, final String sessionId, final User user, final Room room) {
@@ -45,8 +42,8 @@ public class Session extends JpaBaseEntity {
     this.user = user;
     this.room = room;
 
-    user.setSession(this);
-    room.addSession(this);
+    //this.user.setSession(this);
+    this.room.addSession(this);
   }
 
   public void delete() {
