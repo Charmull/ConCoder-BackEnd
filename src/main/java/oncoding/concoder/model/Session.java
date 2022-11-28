@@ -26,7 +26,7 @@ public class Session extends JpaBaseEntity {
   private String sessionId;
 
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "id")
+  @JoinColumn(name = "user_id")
   private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)

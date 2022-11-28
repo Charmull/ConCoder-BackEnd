@@ -2,6 +2,7 @@ package oncoding.concoder.model;
 
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,7 +16,7 @@ public class User extends JpaBaseEntity {
 
   private String name;
 
-  @OneToOne(mappedBy = "user")
+  @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
   private Session session;
 
   public User(final String name) {
