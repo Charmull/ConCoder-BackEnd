@@ -25,7 +25,7 @@ public class User extends JpaBaseEntity {
   public void exit(final Session session) {
     if (isLinkedSession(session)) {
       this.session = null;
-      session.delete();
+      //session.delete();
     }
   }
 

@@ -36,7 +36,7 @@ public class Room extends JpaBaseEntity{
   public void exit(final Session session) {
     if (sessions.contains(session)) {
       sessions.remove(session);
-      session.delete();
+      //session.delete();
     }
   }
 
