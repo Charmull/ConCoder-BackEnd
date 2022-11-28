@@ -1,25 +1,20 @@
 package oncoding.concoder.controller;
 
-import java.net.http.WebSocket;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oncoding.concoder.config.WebSocketConfig;
 import oncoding.concoder.dto.ChatDTO.DummyResponse;
-import oncoding.concoder.dto.ChatDTO.ExitResponse;
 import oncoding.concoder.dto.ChatDTO.SessionRequest;
 import oncoding.concoder.dto.ChatDTO.SessionResponse;
-import oncoding.concoder.dto.ChatDTO.UserResponse;
 import oncoding.concoder.service.ChattingService;
 import org.json.simple.JSONObject;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.SimpAttributesContextHolder;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,12 +32,12 @@ public class VideoRoomController {
 
   private final ChattingService chattingService;
   private final SimpMessagingTemplate template;
-  //private final SimpMessageSendingOperations template;
+
+  //private SessionResponse sessionResponse;
 
 
-  private SessionResponse sessionResponse;
 
-
+/*
   // 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
   @MessageMapping("/video/joined-room-info")
   private SessionResponse joinRoom(@Header("simpSessionId") String sessionId,JSONObject ob) {
@@ -66,7 +61,29 @@ public class VideoRoomController {
     return sessionResponse;
 
   }
+*/
 
+  // 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
+  @MessageMapping("/video/joined-room-info")
+  private SessionResponse joinRoom(JSONObject ob) {
+    //만약에 connectEvent 에서 sessioniD 받아올 수 있으면 HEADER가 아니라 그냥 ob 안에 담아서 처리하면 됨
+    String sessionId = (String) ob.get("sessionId");
+    log.info("@MessageMapping(\"/video/joined-room-info\") sessionId: "+sessionId+" ");
+
+    //final UUID roomId, @RequestBody final SessionRequest request
+    UUID roomId = UUID.fromString((String)ob.get("roomId"));
+    SessionRequest request = new SessionRequest(UUID.fromString((String)ob.get("userId")),sessionId);
+
+    SessionResponse sessionResponse = chattingService.enter(roomId, request);
+    //template.convertAndSend("/sub/rooms/" + roomId + sessionResponse);
+
+    template.convertAndSend("/sub/video/joined-room-info",sessionResponse);
+
+    log.info("convertAndSend to /sub/video/joined-room-info"+ sessionResponse);
+
+    return sessionResponse;
+
+  }
 
   // caller의 정보를 다른 callee들에게 쏴준다.
   @MessageMapping("/video/caller-info")
@@ -106,7 +123,9 @@ public class VideoRoomController {
 
   @EventListener
   private void handleSessionConnected(SessionConnectEvent event) {
-    log.info("session connected");
+    String sessionId = SimpAttributesContextHolder.currentAttributes().getSessionId();
+  //connect하고 나서 클라이언트한테 본내주면 될 듯
+    log.info("session connected sessionId: "+sessionId);
 
   }
 
@@ -114,6 +133,8 @@ public class VideoRoomController {
   @EventListener
   public void handleSessionDisconnect(SessionDisconnectEvent event) {
     // 그냥 disconnect 결과로 프론트한테 removedID 쏴주면 아래처럼 나간 유저 정보 삭제 시키는 걸로 다시 요청 달라고 하기
+    
+    //정 안되면 그냥 끊을 때 프론트에서 sessionId 넘겨줘서 전처리 다 하고 끊어버리기,,, 어쩔 수 없움 ㅠ
 
     //String sessionId = event.getSessionId();
     StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
