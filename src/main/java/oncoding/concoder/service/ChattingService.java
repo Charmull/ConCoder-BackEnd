@@ -60,14 +60,21 @@ public class ChattingService {
     log.info("entered room: "+ room.toString());
     log.info("entered session: "+session.toString());
 
-    Session newSession = new Session(session.getId(),request.getSessionId(), user, room);
-    sessionRepository.save(newSession);
-    user.setSession(newSession);
+    session.setSessionId(request.getSessionId());
+    session.setUser(user);
+    session.setRoom(room);
+    sessionRepository.save(session);
+
+    user.setSession(session);
     userRepository.save(user);
 
+    room.addSession(session);
+    roomRepository.save(room);
+
     log.info("entered session info: ");
-    log.info("entered user: "+newSession.getUser().getId());
-    log.info("entered room: "+newSession.getRoom().getId());
+    log.info("entered user: "+session.getUser().getId());
+    log.info("entered room: "+session.getRoom().getId());
+
 
     return SessionResponse.from(room.users()); //sessionResponse 생성 - room의 users를 가지고 있음
   }

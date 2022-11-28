@@ -42,7 +42,7 @@ public class Session extends JpaBaseEntity {
     this.user = user;
     this.room = room;
 
-    //this.user.setSession(this);
+    this.user.setSession(this);
     this.room.addSession(this);
   }
 
