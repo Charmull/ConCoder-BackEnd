@@ -139,9 +139,9 @@ public class ChattingService {
   }
 
   public void clear() {
+    sessionRepository.deleteAll();
     userRepository.deleteAll();
     roomRepository.deleteAll();
-    sessionRepository.deleteAll();
   }
 
 }

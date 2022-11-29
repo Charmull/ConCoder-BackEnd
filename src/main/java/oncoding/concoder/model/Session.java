@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 public class Session extends JpaBaseEntity {
 
   private String sessionId;
-
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
   private User user;
