@@ -100,6 +100,18 @@ public class ChattingService {
   }
 
 
+  public DummyResponse createRoomAndUser(String username){
+
+    List<User> users = new ArrayList<>();
+    List<Room> rooms = new ArrayList<>();
+
+    users.add(userRepository.save(new User(username)));
+    rooms.add(roomRepository.save(new Room(2)));
+
+    return DummyResponse.of(users, rooms);
+  }
+
+
   public DummyResponse createDummy() {
     List<User> users = new ArrayList<>();
     List<Room> rooms = new ArrayList<>();
@@ -126,10 +138,10 @@ public class ChattingService {
     return DummyResponse.of(users, rooms);
   }
 
-  public void clearDummy() {
-
+  public void clear() {
     userRepository.deleteAll();
     roomRepository.deleteAll();
+    sessionRepository.deleteAll();
   }
 
 }
