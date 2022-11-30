@@ -62,9 +62,9 @@ public class VideoRoomController {
 
   }
 
-  // 실시간으로 나간 세션 감지하여 나간 전체 세션 리스트 반환
+  // 실시간으로 나간 세션 감지하여 리턴
   @MessageMapping("/video/unjoined-room-info/{roomId}")
-  private SessionResponse unJoinRoom(@DestinationVariable final String roomId,JSONObject ob) {
+  private JSONObject unJoinRoom(@DestinationVariable final String roomId,JSONObject ob) {
 
     String sessionId = (String) ob.get("sessionId");
     log.info("@MessageMapping(\"/video/unjoined-room-info\") sessionId: "+sessionId+" ");
@@ -90,11 +90,15 @@ public class VideoRoomController {
     //template.convertAndSend("/sub/rooms/" + response.getRoomId(), response.getSessionResponse());
     //log.info("convertAndSend to /sub/rooms/getRoomid",response.getSessionResponse());
 
-    template.convertAndSend("/sub/video/unjoined-room-info/"+roomId,response);
+    JSONObject object=new JSONObject();
+    object.put("userId",ob.get("userId"));
+    object.put("roomId",roomId);
+
+    template.convertAndSend("/sub/video/unjoined-room-info/"+roomId,object);
 
     log.info("convertAndSend to /sub/video/unjoined-room-info"+ removedId);
 
-    return this.sessionResponse;
+    return object;
 
   }
 
@@ -157,6 +161,13 @@ public class VideoRoomController {
   public ResponseEntity<DummyResponse> createRoomAndUser(@RequestBody JSONObject ob) {
     String username = (String) ob.get("username");
     DummyResponse response = chattingService.createRoomAndUser(username);
+    return ResponseEntity.ok(response);
+  }
+
+  @PostMapping("/video/user")
+  public ResponseEntity<UserResponse> createUser(@RequestBody JSONObject ob) {
+    String username = (String) ob.get("username");
+    UserResponse response = chattingService.createOnlyUser(username);
     return ResponseEntity.ok(response);
   }
 

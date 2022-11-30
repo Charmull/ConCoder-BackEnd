@@ -11,6 +11,7 @@ import oncoding.concoder.dto.ChatDTO.MessageRequest;
 import oncoding.concoder.dto.ChatDTO.MessageResponse;
 import oncoding.concoder.dto.ChatDTO.SessionRequest;
 import oncoding.concoder.dto.ChatDTO.SessionResponse;
+import oncoding.concoder.dto.ChatDTO.UserResponse;
 import oncoding.concoder.model.Room;
 import oncoding.concoder.model.Session;
 import oncoding.concoder.model.User;
@@ -98,6 +99,13 @@ public class ChattingService {
 
     return new ExitResponse(room.getId(), SessionResponse.from(room.users()));
   }
+
+
+  public UserResponse createOnlyUser(String username){
+    User user = userRepository.save(new User(username));
+    return UserResponse.from(user);
+  }
+
 
 
   public DummyResponse createRoomAndUser(String username){
