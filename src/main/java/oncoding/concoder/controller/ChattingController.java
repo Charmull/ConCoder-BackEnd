@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncoding.concoder.dto.ChatDTO.MessageRequest;
 import oncoding.concoder.service.ChattingService;
+import org.json.simple.JSONObject;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -20,23 +21,12 @@ public class ChattingController {
   // 특정 Broker로 메시지를 전달한다.
   private final ChattingService chatService;
 
- /*
-  @MessageMapping:
-  @MessageMapping 설정한 url 매핑으로 클라이언트로부터 요청 메시지를 받으면
-  @SendTo 설정한 구독 클라이언트들에게 메시지를 보냅니다.
- * */
 
-  /**
-   * 클라이언트에서 /publish/rooms/{roomId}/chat url로 메시지를 보내면,
-   * ChatRequest의 채팅방 id를 이용하여 해당 방을 구독 중인 사용자들에게 메시지를 전달하도록 함
-   * @param roomId
-   * @param request
-   */
   @MessageMapping("/rooms/chat/{roomId}")
-  public void chat(@DestinationVariable final String roomId, final MessageRequest request) {
-    log.info("/rooms/chat/"+roomId+" userId:  "+request.getUserId());
-    log.info("/rooms/chat/"+roomId+" content: "+request.getContent());
-
+  public void chat(@DestinationVariable final String roomId, JSONObject ob) {
+    log.info("/rooms/chat/"+roomId+" userId:  "+ob.get("userId"));
+    log.info("/rooms/chat/"+roomId+" content: "+ob.get("content"));
+    MessageRequest request = new MessageRequest(UUID.fromString((String) ob.get("userId")), (String)ob.get("content"));
     template.convertAndSend("/sub/rooms/chat/"+ roomId , chatService.sendMessage(request));
     log.info("after chatting convert and send");
   }
