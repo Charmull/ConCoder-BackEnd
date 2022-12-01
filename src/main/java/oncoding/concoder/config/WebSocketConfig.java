@@ -1,28 +1,12 @@
 package oncoding.concoder.config;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import oncoding.concoder.controller.VideoRoomController;
-import oncoding.concoder.dto.ChatDTO.SessionResponse;
-import oncoding.concoder.dto.ChatDTO.UserResponse;
-import oncoding.concoder.model.User;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.event.EventListener;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Configuration
 @Slf4j
@@ -60,13 +44,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer { //Web
   }
 
 
-
-//  @EventListener
-//  public void onDisconnectEvent(final SessionDisconnectEvent event) {
-//    System.out.println("DisconnectEvent");
-//    log.info("SessionDisconnectEventListener sessionId : "+event.getSessionId()); //해당 유저의 sessionId 받아옴
-//    //videoRoomController.handleSessionDisconnect(event.getSessionId())
-//  }
 
 
 
