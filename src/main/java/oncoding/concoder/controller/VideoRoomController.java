@@ -46,17 +46,19 @@ public class VideoRoomController {
   private SessionResponse joinRoom(@DestinationVariable final String roomId,JSONObject ob) {
     //만약에 connectEvent 에서 sessioniD 받아올 수 있으면 HEADER가 아니라 그냥 ob 안에 담아서 처리하면 됨
     String sessionId = (String) ob.get("sessionId");
+
     log.info("@MessageMapping(\"/video/joined-room-info\") sessionId: "+sessionId+" ");
+    log.info("@MessageMapping(\"/video/joined-room-info\") roomId : "+roomId+" ");
+    log.info("@MessageMapping(\"/video/joined-room-info\") userId : "+(String)ob.get("userId")+" ");
 
     UUID realRoomId = UUID.fromString(roomId);
     SessionRequest request = new SessionRequest(UUID.fromString((String)ob.get("userId")),sessionId);
 
     sessionResponse = chattingService.enter(realRoomId, request);
-    //template.convertAndSend("/sub/rooms/" + roomId + sessionResponse);
 
-    template.convertAndSend("/sub/video/joined-room-info"+ roomId,sessionResponse);
+    template.convertAndSend("/sub/video/joined-room-info/"+ roomId,sessionResponse);
 
-    log.info("convertAndSend to /sub/video/joined-room-info"+ roomId +" : "+ sessionResponse);
+    log.info("convertAndSend to /sub/video/joined-room-info/"+ roomId +" : "+ sessionResponse);
 
     return sessionResponse;
 
@@ -96,7 +98,7 @@ public class VideoRoomController {
 
     template.convertAndSend("/sub/video/unjoined-room-info/"+roomId,object);
 
-    log.info("convertAndSend to /sub/video/unjoined-room-info"+ removedId);
+    log.info("convertAndSend to /sub/video/unjoined-room-info/"+ removedId);
 
     return object;
 
