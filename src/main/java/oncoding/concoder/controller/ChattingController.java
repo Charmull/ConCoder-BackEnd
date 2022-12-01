@@ -2,6 +2,7 @@ package oncoding.concoder.controller;
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import oncoding.concoder.dto.ChatDTO.MessageRequest;
 import oncoding.concoder.service.ChattingService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 
 
 @Controller
+@Slf4j
 @RequiredArgsConstructor
 public class ChattingController {
 
@@ -32,6 +34,10 @@ public class ChattingController {
    */
   @MessageMapping("/rooms/chat/{roomId}")
   public void chat(@DestinationVariable final UUID roomId, final MessageRequest request) {
+    log.info("/rooms/chat/"+roomId+" userId:  "+request.getUserId());
+    log.info("/rooms/chat/"+roomId+" content: "+request.getContent());
+    template.convertAndSend("/sub/rooms/chat/"+ roomId , chatService.sendMessage(request));
+    log.info("after chatting convert and send");
     template.convertAndSend("/sub/rooms/chat/"+ roomId , chatService.sendMessage(request));
   }
 

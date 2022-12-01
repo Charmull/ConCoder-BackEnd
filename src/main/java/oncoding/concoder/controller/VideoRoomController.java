@@ -40,6 +40,8 @@ public class VideoRoomController {
 
   private SessionResponse sessionResponse;
 
+  private Map<UUID, Object> usersAtRooms;
+
 
   // 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
   @MessageMapping("/video/joined-room-info/{roomId}")
@@ -54,7 +56,7 @@ public class VideoRoomController {
     UUID realRoomId = UUID.fromString(roomId);
     SessionRequest request = new SessionRequest(UUID.fromString((String)ob.get("userId")),sessionId);
 
-    sessionResponse = chattingService.enter(realRoomId, request);
+    sessionResponse = chattingService.enter(realRoomId, request); //현재 roomId에 해당되는 애들만
 
     template.convertAndSend("/sub/video/joined-room-info/"+ roomId,sessionResponse);
 
