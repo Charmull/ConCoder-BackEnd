@@ -10,9 +10,10 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 
-@Controller
+@RestController
 @Slf4j
 @RequiredArgsConstructor
 public class ChattingController {
@@ -22,16 +23,14 @@ public class ChattingController {
   private final ChattingService chatService;
 
 
-//  @MessageMapping("/rooms/chat/{roomId}")
-//  public void chat(@DestinationVariable final String roomId, JSONObject ob) {
-//    log.info("/rooms/chat/"+roomId+" userId:  "+ob.get("userId"));
-//    log.info("/rooms/chat/"+roomId+" content: "+ob.get("content"));
-//    MessageRequest request = new MessageRequest(UUID.fromString((String) ob.get("userId")), (String)ob.get("content"));
-//    template.convertAndSend("/sub/rooms/chat/"+ roomId , chatService.sendMessage(request));
-//    log.info("after chatting convert and send");
-//  }
-
-
+  @MessageMapping("/rooms/chat/{roomId}")
+  public void chat(@DestinationVariable final String roomId, JSONObject ob) {
+    log.info("/rooms/chat/"+roomId+" userId:  "+ob.get("userId"));
+    log.info("/rooms/chat/"+roomId+" content: "+ob.get("content"));
+    MessageRequest request = new MessageRequest(UUID.fromString((String) ob.get("userId")), (String)ob.get("content"));
+    template.convertAndSend("/sub/rooms/chat/"+ roomId , chatService.sendMessage(request));
+    log.info("after chatting convert and send");
+  }
 
 
 

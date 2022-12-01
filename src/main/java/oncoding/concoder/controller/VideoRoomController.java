@@ -44,14 +44,15 @@ public class VideoRoomController {
   private Map<UUID, Object> usersAtRooms;
 
 
-  @MessageMapping("/video/chat/{roomId}")
-  public void chat(@DestinationVariable final String roomId, JSONObject ob) {
-    log.info("/rooms/chat/"+roomId+" userId:  "+ob.get("userId"));
-    log.info("/rooms/chat/"+roomId+" content: "+ob.get("content"));
-    MessageRequest request = new MessageRequest(UUID.fromString((String) ob.get("userId")), (String)ob.get("content"));
-    template.convertAndSend("/sub/rooms/chat/"+ roomId , chattingService.sendMessage(request));
-    log.info("after chatting convert and send");
-  }
+//  @MessageMapping("/video/chat/{roomId}")
+//  public void chat(@DestinationVariable final String roomId, JSONObject ob) {
+//    log.info("/rooms/chat/"+roomId+" userId:  "+ob.get("userId"));
+//    log.info("/rooms/chat/"+roomId+" content: "+ob.get("content"));
+//    MessageRequest request = new MessageRequest(UUID.fromString((String) ob.get("userId")), (String)ob.get("content"));
+//    template.convertAndSend("/sub/rooms/chat/"+ roomId , chattingService.sendMessage(request));
+//    log.info("after chatting convert and send");
+//  }
+
 
 
   // 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
