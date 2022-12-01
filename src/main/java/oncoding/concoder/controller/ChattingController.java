@@ -33,9 +33,10 @@ public class ChattingController {
    * @param request
    */
   @MessageMapping("/rooms/chat/{roomId}")
-  public void chat(@DestinationVariable final UUID roomId, final MessageRequest request) {
+  public void chat(@DestinationVariable final String roomId, final MessageRequest request) {
     log.info("/rooms/chat/"+roomId+" userId:  "+request.getUserId());
     log.info("/rooms/chat/"+roomId+" content: "+request.getContent());
+
     template.convertAndSend("/sub/rooms/chat/"+ roomId , chatService.sendMessage(request));
     log.info("after chatting convert and send");
     template.convertAndSend("/sub/rooms/chat/"+ roomId , chatService.sendMessage(request));
