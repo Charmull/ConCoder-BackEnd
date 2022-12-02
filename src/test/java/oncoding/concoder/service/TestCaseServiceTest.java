@@ -2,6 +2,8 @@ package oncoding.concoder.service;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+import io.restassured.internal.util.SafeExceptionRethrower;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -82,12 +84,24 @@ public class TestCaseServiceTest {
   @Test
   void testCase_단건_조회(){
 
+    //JSONObject object = service.getTestCase(this.roomId,"30d2eb5b-33a2-451a-acc3-650da3cebcab");
+
+    JSONObject ob = new JSONObject();
+    ob.put("input","input");
+    ob.put("output","output");
+
+    service.createTestCase(this.roomId,ob);
+
     Map<String,JSONObject> map = service.getTestCases(this.roomId);
 
     Set s = map.keySet();
 
     Iterator<String> iter = s.iterator();
     while (iter.hasNext()) {
+
+      System.out.println("here");
+      String data = iter.next();
+      System.out.println(service.getTestCase(this.roomId,data));
       String data = iter.next();
       assertTrue(map.get(data).get("input").equals("input"));
     }
@@ -96,6 +110,13 @@ public class TestCaseServiceTest {
 
   @Test
   void testCase_수정(){
+
+    JSONObject ob = new JSONObject();
+    ob.put("input","input");
+    ob.put("output","output");
+
+    JSONObject result = (JSONObject) service.createTestCase(this.roomId,ob);
+
     Map<String,JSONObject> map = service.getTestCases(this.roomId);
 
     Set s = map.keySet();
@@ -103,10 +124,10 @@ public class TestCaseServiceTest {
     Iterator<String> iter = s.iterator();
     while (iter.hasNext()) {
       String data = iter.next();
-      JSONObject ob = new JSONObject();
-      ob.put("input","modified input");
-      ob.put("output","modified output");
-      service.modifyTestCase(this.roomId,data,ob);
+      JSONObject ob2 = new JSONObject();
+      ob2.put("input","modified input");
+      ob2.put("output","modified output");
+      System.out.println(service.modifyTestCase(this.roomId,data,ob2).toJSONString());
       assertTrue(map.get(data).get("input").equals("modified input"));
       assertTrue(map.get(data).get("output").equals("modified output"));
 

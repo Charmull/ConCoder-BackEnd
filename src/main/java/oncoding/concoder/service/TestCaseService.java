@@ -50,6 +50,9 @@ public class TestCaseService {
 
     JSONObject testcase = hashOperations.get(roomId,testCaseId);
 
+
+    testcase.put("testCaseId",testCaseId);
+
     return testcase;
 
   }
