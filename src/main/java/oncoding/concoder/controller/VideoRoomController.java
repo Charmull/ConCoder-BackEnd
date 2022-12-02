@@ -124,35 +124,36 @@ public class VideoRoomController {
 
   // caller의 정보를 다른 callee들에게 쏴준다.
   @MessageMapping("/video/caller-info/{roomId}")
-  private Map<String, Object> caller(@DestinationVariable final String roomId,JSONObject ob) {
+  private void caller(@DestinationVariable final String roomId,JSONObject ob) {
 
-    // caller의 정보를 소켓으로 쏴준다.
-    JSONObject data = new JSONObject();
-    data.put("from", ob.get("from"));
-    data.put("to", ob.get("toCall"));
-    data.put("signal", ob.get("signal")); //그냥 data
-    data.put("type", ob.get("type")); //sdp 인지 ice인지 구분
+//    // caller의 정보를 소켓으로 쏴준다.
+//    JSONObject data = new JSONObject();
+//    data.put("from", ob.get("from"));
+//    data.put("to", ob.get("toCall"));
+//    data.put("signal", ob.get("signal")); //그냥 data
+//    data.put("type", ob.get("type")); //sdp 인지 ice인지 구분
 
-    template.convertAndSend("/sub/video/caller-info/"+roomId,data);
 
-    log.info("convertAndSend to /sub/video/caller-info/"+roomId+" : ",data);
+    template.convertAndSend("/sub/video/caller-info/"+roomId,ob);
 
-    return data;
+    log.info("convertAndSend to /sub/video/caller-info/"+roomId+" : ",ob);
+
   }
 
   // caller와 callee의 signaling을 위해 callee 정보를 쏴준다.
   @MessageMapping("/video/callee-info/{roomId}")
-  private Map<String, Object> answerCall(@DestinationVariable final String roomId,JSONObject ob) {
+  private void answerCall(@DestinationVariable final String roomId,JSONObject ob) {
 
-    // accepter의 정보를 소켓으로 쏴준다.
-    JSONObject data = new JSONObject();
-    data.put("from", ob.get("from"));
-    data.put("to", ob.get("toCall"));
-    data.put("signal", ob.get("signal")); //그냥 data
 
-    template.convertAndSend("/sub/video/callee-info/"+roomId,data);
-    log.info("convertAndSend to /sub/video/callee-info/"+roomId+" : ",data);
-    return data;
+//    // accepter의 정보를 소켓으로 쏴준다.
+//    JSONObject data = new JSONObject();
+//    data.put("from", (String)ob.get("from"));
+//    data.put("to", (String)ob.get("toCall"));
+//    data.put("signal", (String)ob.get("signal")); //그냥 data
+
+    template.convertAndSend("/sub/video/callee-info/"+roomId,ob);
+    log.info("convertAndSend to /sub/video/callee-info/"+roomId+" : ",ob);
+
   }
 
 
