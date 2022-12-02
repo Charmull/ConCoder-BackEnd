@@ -127,7 +127,7 @@ public class VideoRoomController {
   private Map<String, Object> caller(@DestinationVariable final String roomId,JSONObject ob) {
 
     // caller의 정보를 소켓으로 쏴준다.
-    Map<String, Object> data = new HashMap<>();
+    JSONObject data = new JSONObject();
     data.put("from", ob.get("from"));
     data.put("to", ob.get("toCall"));
     data.put("signal", ob.get("signal")); //그냥 data
@@ -145,12 +145,12 @@ public class VideoRoomController {
   private Map<String, Object> answerCall(@DestinationVariable final String roomId,JSONObject ob) {
 
     // accepter의 정보를 소켓으로 쏴준다.
-    Map<String, Object> data = new HashMap<>();
+    JSONObject data = new JSONObject();
     data.put("from", ob.get("from"));
     data.put("to", ob.get("toCall"));
     data.put("signal", ob.get("signal")); //그냥 data
 
-    template.convertAndSend("/sub/video/callee-info/"+roomId+" : ",data);
+    template.convertAndSend("/sub/video/callee-info/"+roomId,data);
     log.info("convertAndSend to /sub/video/callee-info/"+roomId+" : ",data);
     return data;
   }

@@ -102,7 +102,6 @@ public class TestCaseServiceTest {
       System.out.println("here");
       String data = iter.next();
       System.out.println(service.getTestCase(this.roomId,data));
-      String data = iter.next();
       assertTrue(map.get(data).get("input").equals("input"));
     }
 
