@@ -21,6 +21,7 @@ public class CompileDto {
     @ToString
     @AllArgsConstructor
     public static class Response {
+        private String testCaseId;
         private String output;
         private Long time;
     }
