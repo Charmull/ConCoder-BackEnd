@@ -92,7 +92,7 @@ public class TestCaseController {
 
     testCaseService.deleteTestCase(roomId,testCaseId);
     log.info("/testcases/delete/"+roomId+": "+testCaseId);
-    template.convertAndSend("/sub/testcases/delete/"+ roomId,testCaseId);
+    template.convertAndSend("/sub/testcases/delete/"+ roomId,ob);
     log.info("after /sub/testcases/delete");
   }
   
