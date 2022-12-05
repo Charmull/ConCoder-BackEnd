@@ -56,6 +56,7 @@ public class VideoRoomController {
 
 
 
+
   // 실시간으로 들어온 세션 감지하여 전체 세션 리스트 반환
   @MessageMapping("/video/joined-room-info/{roomId}")
   private SessionResponse joinRoom(@DestinationVariable final String roomId,JSONObject ob) {

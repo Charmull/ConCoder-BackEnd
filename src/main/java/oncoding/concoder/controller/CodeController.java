@@ -20,7 +20,7 @@ public class CodeController {
    * @param ob
    */
   @MessageMapping("/code/{roomId}")
-  private void caller(@DestinationVariable final String roomId,JSONObject ob) {
+  private void codeShare(@DestinationVariable final String roomId,JSONObject ob) {
 
     template.convertAndSend("/sub/code/"+roomId,ob);
 
