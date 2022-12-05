@@ -54,6 +54,20 @@ public class VideoRoomController {
     log.info("after chatting convert and send");
   }
 
+  /**
+   * 코드를 해당 룸 사용자들에게 공유
+   * @param roomId
+   * @param ob
+   */
+  @MessageMapping("/code/{roomId}")
+  private void codeShare(@DestinationVariable final String roomId,JSONObject ob) {
+
+    template.convertAndSend("/sub/code/"+roomId,ob);
+
+    log.info("convertAndSend to /sub/code/"+roomId+" : "+ ob);
+
+  }
+
 
 
 
@@ -130,7 +144,7 @@ public class VideoRoomController {
 
     template.convertAndSend("/sub/video/caller-info/"+roomId,ob);
 
-    log.info("convertAndSend to /sub/video/caller-info/"+roomId+" : ",ob);
+    log.info("convertAndSend to /sub/video/caller-info/"+roomId+" : " + ob);
 
   }
 
@@ -139,7 +153,7 @@ public class VideoRoomController {
   private void answerCall(@DestinationVariable final String roomId,JSONObject ob) {
 
     template.convertAndSend("/sub/video/callee-info/"+roomId,ob);
-    log.info("convertAndSend to /sub/video/callee-info/"+roomId+" : ",ob);
+    log.info("convertAndSend to /sub/video/callee-info/"+roomId+" : "+ ob);
 
   }
 
