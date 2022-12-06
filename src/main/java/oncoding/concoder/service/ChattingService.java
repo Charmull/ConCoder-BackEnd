@@ -40,7 +40,7 @@ public class ChattingService {
    */
   public MessageResponse sendMessage(final MessageRequest request) {
     User user = userRepository.findById(request.getUserId()).orElseThrow(IllegalArgumentException::new);
-    return new MessageResponse(user.getId(), request.getContent()); //보낼 메세지 객체를 리턴
+    return new MessageResponse(user.getId(),user.getName(), request.getContent()); //보낼 메세지 객체를 리턴
   }
 
   /**

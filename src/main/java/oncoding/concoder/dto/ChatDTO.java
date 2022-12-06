@@ -64,6 +64,7 @@ public class ChatDTO {
     public static class MessageResponse {
 
       private UUID userId;
+      private String username;
       private String content;
     }
 

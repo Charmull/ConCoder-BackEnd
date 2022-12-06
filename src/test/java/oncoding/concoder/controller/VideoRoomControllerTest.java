@@ -107,7 +107,7 @@ class VideoRoomControllerTest {
 
     //expected result
     UserResponse expectedUser = UserResponse.from(user);
-    MessageResponse expectedMessage = new MessageResponse(user.getId(), "채팅을 보내 봅니다.");
+    MessageResponse expectedMessage = new MessageResponse(user.getId(),user.getName(), "채팅을 보내 봅니다.");
 
 
     // Settings
