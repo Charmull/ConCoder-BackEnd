@@ -62,6 +62,11 @@ public class CrawlingService {
         Elements outputs = document.select("#problem_output");
         content.put("output", joinElementsText(outputs, "\n"));
 
+        Element time = document.select("#problem-info > tbody > tr > td:nth-child(1)").get(0);
+        Element memory = document.select("#problem-info > tbody > tr > td:nth-child(2)").get(0);
+        content.put("timeLimit", time.text());
+        content.put("memoryLimit", memory.text());
+
         return content;
     }
 

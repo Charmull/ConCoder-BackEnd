@@ -71,6 +71,8 @@ public class ProblemService {
                 .output(content.get("output"))
                 .level(levelMap.get(rawProblem.getLevel()))
                 .averageTries(rawProblem.getAverageTries())
+                .timeLimit(Integer.parseInt(content.get("timeLimit").replaceAll("[^\\d]*", "")))
+                .memoryLimit(Integer.parseInt(content.get("memoryLimit").replaceAll("[^\\d]*", "")))
                 .build();
             problems.add(problem);
         }

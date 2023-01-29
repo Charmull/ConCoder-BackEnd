@@ -30,6 +30,12 @@ public class Problem extends JpaBaseEntity {
     @Column
     private Float averageTries;
 
+    @Column
+    private Integer timeLimit;
+
+    @Column
+    private Integer memoryLimit;
+
     @Column(columnDefinition = "MEDIUMTEXT")
     @NotNull
     private String description;
@@ -47,13 +53,17 @@ public class Problem extends JpaBaseEntity {
     private List<ProblemCategory> categories = new ArrayList<>();
 
     @Builder
-    public Problem(Integer number, String title, String description, String input, String output, Float averageTries, Level level, List<ProblemCategory> categories) {
+    public Problem(Integer number, String title, Integer timeLimit, Integer memoryLimit, Float averageTries,
+        String description, String input, String output,
+        Level level, List<ProblemCategory> categories) {
         this.number = number;
         this.title = title;
         this.description = description;
         this.input = input;
         this.output = output;
         this.averageTries = averageTries;
+        this.timeLimit = timeLimit;
+        this.memoryLimit = memoryLimit;
         this.level = level;
         this.categories = categories;
     }
