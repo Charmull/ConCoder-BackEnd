@@ -37,9 +37,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer { //Web
   @Override
   public void registerStompEndpoints(final StompEndpointRegistry registry) {
     registry.addEndpoint("/ws-connection") // 클라이언트가 웹 소켓 요청을 하고 싶을 때 해당 End point 로 요청을 보낸다.
-        .setAllowedOrigins("http://localhost:3000, http://localhost:8080");
+        .setAllowedOrigins("*");
     registry.addEndpoint("/ws-connection") // 클라이언트가 웹 소켓 요청을 하고 싶을 때 해당 End point 로 요청을 보낸다.
-        .setAllowedOrigins("http://localhost:3000, http://localhost:8080")
+        .setAllowedOrigins("*")
         .withSockJS(); // fallback
   }
 
